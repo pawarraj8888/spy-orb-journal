@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPY ORB Strategy — Live Journal</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  .header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 24px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header .subtitle { font-size: 13px; color: #6b7280; margin-top: 2px; }
+  .stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 24px 40px; }
+  .stat { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
+  .stat .label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+  .stat .value { font-size: 22px; font-weight: 600; }
+  .stat .value.green { color: #059669; }
+  .stat .value.red { color: #dc2626; }
+  .filters { padding: 0 40px 16px; display: flex; gap: 12px; align-items: center; }
+  .filter-btn { padding: 6px 14px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; font-size: 13px; cursor: pointer; }
+  .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .table-wrap { padding: 0 40px 40px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 13px; }
+  th { padding: 10px 14px; text-align: left; font-weight: 500; color: #6b7280; border-bottom: 1px solid #e5e7eb; background: #f9fafb; font-size: 12px; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9fafb; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+  .badge.win { background: #d1fae5; color: #065f46; }
+  .badge.loss { background: #fee2e2; color: #991b1b; }
+  .badge.flat { background: #f3f4f6; color: #6b7280; }
+  .badge.no-trade { background: #f3f4f6; color: #9ca3af; }
+  .badge.live { background: #dbeafe; color: #1e40af; }
+  .pnl.pos { color: #059669; font-weight: 500; }
+  .pnl.neg { color: #dc2626; font-weight: 500; }
+  .source.live { color: #1e40af; font-weight: 500; }
+  .source.backtest { color: #6b7280; }
+  .updated { font-size: 12px; color: #9ca3af; }
+  .search { padding: 6px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; width: 200px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>SPY ORB Strategy — Trade Journal</h1>
+    <div class="subtitle">Long-only 15-min Opening Range Breakout · 9:45 ET entry · Vol-sized · 2x leverage</div>
+  </div>
+  <div class="updated" id="updated"></div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="label">Total Trades</div><div class="value" id="stat-trades">—</div></div>
+  <div class="stat"><div class="label">Win Rate</div><div class="value" id="stat-wr">—</div></div>
+  <div class="stat"><div class="label">Total R</div><div class="value" id="stat-r">—</div></div>
+  <div class="stat"><div class="label">Avg R/Trade</div><div class="value" id="stat-avgr">—</div></div>
+  <div class="stat"><div class="label">Best Year</div><div class="value green" id="stat-best">—</div></div>
+  <div class="stat"><div class="label">Worst Year</div><div class="value red" id="stat-worst">—</div></div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filter('all')">All Days</button>
+  <button class="filter-btn" onclick="filter('trades')">Trades Only</button>
+  <button class="filter-btn" onclick="filter('wins')">Wins</button>
+  <button class="filter-btn" onclick="filter('losses')">Losses</button>
+  <button class="filter-btn" onclick="filter('live')">Live</button>
+  <input class="search" type="text" placeholder="Search date or year..." oninput="search(this.value)" />
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+  <tr>
+    <th>Date</th>
+    <th>Source</th>
+    <th>OR High</th>
+    <th>Entry</th>
+    <th>Stop</th>
+    <th>Target</th>
+    <th>Risk ($)</th>
+    <th>Vol Ratio</th>
+    <th>Result</th>
+    <th>P&L (R)</th>
+  </tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+let allData = [];
+let currentFilter = 'all';
+let currentSearch = '';
+
+async function loadData() {
+  const res = await fetch('trades.json');
+  allData = await res.json();
+  allData.sort((a,b) => b.date.localeCompare(a.date));
+  
+  document.getElementById('updated').textContent = 
+    'Updated: ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  
+  updateStats();
+  render();
+}
+
+function updateStats() {
+  const trades = allData.filter(d => d.result !== 'NO TRADE');
+  const wins   = trades.filter(d => d.result === 'WIN');
+  const byYear = {};
+  
+  trades.forEach(d => {
+    const yr = d.date.slice(0,4);
+    byYear[yr] = (byYear[yr] || 0) + d.pnl_r;
+  });
+  
+  const yearVals = Object.values(byYear);
+  const totalR   = trades.reduce((s,d) => s + d.pnl_r, 0);
+  
+  document.getElementById('stat-trades').textContent  = trades.length;
+  document.getElementById('stat-wr').textContent      = trades.length ? (wins.length/trades.length*100).toFixed(1)+'%' : '—';
+  document.getElementById('stat-r').textContent       = totalR.toFixed(1) + 'R';
+  document.getElementById('stat-avgr').textContent    = trades.length ? (totalR/trades.length).toFixed(3)+'R' : '—';
+  document.getElementById('stat-best').textContent    = yearVals.length ? '+' + Math.max(...yearVals).toFixed(1)+'R' : '—';
+  document.getElementById('stat-worst').textContent   = yearVals.length ? Math.min(...yearVals).toFixed(1)+'R' : '—';
+}
+
+function filter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function search(val) {
+  currentSearch = val.toLowerCase();
+  render();
+}
+
+function render() {
+  let data = allData;
+  
+  if (currentSearch) {
+    data = data.filter(d => d.date.includes(currentSearch));
+  }
+  
+  if (currentFilter === 'trades') data = data.filter(d => d.result !== 'NO TRADE');
+  if (currentFilter === 'wins')   data = data.filter(d => d.result === 'WIN');
+  if (currentFilter === 'losses') data = data.filter(d => d.result === 'LOSS');
+  if (currentFilter === 'live')   data = data.filter(d => d.source === 'live');
+  
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = data.slice(0, 500).map(d => {
+    const isNoTrade = d.result === 'NO TRADE';
+    const badgeCls  = d.result === 'WIN' ? 'win' : d.result === 'LOSS' ? 'loss' : d.result === 'NO TRADE' ? 'no-trade' : 'flat';
+    const pnlCls    = d.pnl_r > 0 ? 'pos' : d.pnl_r < 0 ? 'neg' : '';
+    const srcCls    = d.source === 'live' ? 'live' : 'backtest';
+    
+    return `<tr>
+      <td>${d.date}</td>
+      <td><span class="source ${srcCls}">${d.source}</span></td>
+      <td>${isNoTrade ? '—' : '$' + (d.or_high||0).toFixed(2)}</td>
+      <td>${isNoTrade ? '—' : '$' + (d.entry||0).toFixed(2)}</td>
+      <td>${isNoTrade ? '—' : '$' + (d.stop||0).toFixed(2)}</td>
+      <td>${isNoTrade ? '—' : '$' + (d.target||0).toFixed(2)}</td>
+      <td>${isNoTrade ? '—' : '$' + (d.risk_dollars||0).toFixed(0)}</td>
+      <td>${isNoTrade ? '—' : (d.vol_ratio||1).toFixed(2) + 'x'}</td>
+      <td><span class="badge ${badgeCls}">${d.result}</span></td>
+      <td class="pnl ${pnlCls}">${isNoTrade ? '—' : (d.pnl_r >= 0 ? '+' : '') + d.pnl_r.toFixed(2) + 'R'}</td>
+    </tr>`;
+  }).join('');
+}
+
+loadData();
+</script>
+</body>
+</html>
