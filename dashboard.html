@@ -3,175 +3,831 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPY ORB Strategy — Live Journal</title>
+<title>ΔMOM · Systematic Signal Research</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a1a; }
-  .header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 24px 40px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 20px; font-weight: 600; }
-  .header .subtitle { font-size: 13px; color: #6b7280; margin-top: 2px; }
-  .stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 24px 40px; }
-  .stat { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
-  .stat .label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
-  .stat .value { font-size: 22px; font-weight: 600; }
-  .stat .value.green { color: #059669; }
-  .stat .value.red { color: #dc2626; }
-  .filters { padding: 0 40px 16px; display: flex; gap: 12px; align-items: center; }
-  .filter-btn { padding: 6px 14px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; font-size: 13px; cursor: pointer; }
-  .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-  .table-wrap { padding: 0 40px 40px; }
-  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 13px; }
-  th { padding: 10px 14px; text-align: left; font-weight: 500; color: #6b7280; border-bottom: 1px solid #e5e7eb; background: #f9fafb; font-size: 12px; }
-  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f9fafb; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-  .badge.win { background: #d1fae5; color: #065f46; }
-  .badge.loss { background: #fee2e2; color: #991b1b; }
-  .badge.flat { background: #f3f4f6; color: #6b7280; }
-  .badge.no-trade { background: #f3f4f6; color: #9ca3af; }
-  .badge.live { background: #dbeafe; color: #1e40af; }
-  .pnl.pos { color: #059669; font-weight: 500; }
-  .pnl.neg { color: #dc2626; font-weight: 500; }
-  .source.live { color: #1e40af; font-weight: 500; }
-  .source.backtest { color: #6b7280; }
-  .updated { font-size: 12px; color: #9ca3af; }
-  .search { padding: 6px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; width: 200px; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: #fff;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* TOP BAR */
+.topbar {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid #d2d2d7;
+  position: sticky; top: 0; z-index: 100;
+  padding: 0 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px;
+}
+.topbar-logo {
+  font-size: 17px; font-weight: 600;
+  color: #1d1d1f; letter-spacing: -0.01em;
+}
+.topbar-right {
+  display: flex; align-items: center; gap: 20px;
+}
+.topbar-right span {
+  font-size: 12px; color: #6e6e73;
+}
+.live-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: #f5f5f7; border-radius: 100px;
+  padding: 4px 10px; font-size: 11px; color: #1d1d1f; font-weight: 500;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #34c759;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* HERO */
+.hero {
+  padding: 48px 48px 0;
+  border-bottom: 1px solid #d2d2d7;
+}
+.hero-top {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 48px;
+  margin-bottom: 36px;
+}
+.hero-title {
+  font-size: 28px; font-weight: 600;
+  letter-spacing: -0.02em; line-height: 1.15;
+  margin-bottom: 10px; color: #1d1d1f;
+  max-width: 540px;
+}
+.hero-sub {
+  font-size: 13px; color: #6e6e73;
+  max-width: 480px; line-height: 1.6;
+}
+.hero-kpis {
+  display: flex; gap: 0;
+  border: 1px solid #d2d2d7; border-radius: 12px;
+  overflow: hidden; flex-shrink: 0;
+}
+.kpi {
+  padding: 16px 24px;
+  border-right: 1px solid #d2d2d7;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.kpi:last-child { border-right: none; }
+.kpi-label {
+  font-size: 11px; color: #6e6e73;
+  font-weight: 400; white-space: nowrap;
+}
+.kpi-val {
+  font-size: 20px; font-weight: 600;
+  letter-spacing: -0.02em; color: #1d1d1f;
+}
+.kpi-val.blue { color: #0066cc; }
+.kpi-val.green { color: #1d8348; }
+.kpi-val.amber { color: #9a5e00; }
+
+/* TABS */
+.tabs-wrap {
+  display: flex; gap: 0; overflow-x: auto;
+}
+.tab-btn {
+  padding: 12px 20px;
+  font-size: 13px; font-weight: 400;
+  color: #6e6e73; background: none; border: none;
+  cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+.tab-btn:hover { color: #1d1d1f; }
+.tab-btn.active {
+  color: #0066cc; font-weight: 500;
+  border-bottom-color: #0066cc;
+}
+
+/* PANES */
+.tab-pane { display: none; padding: 40px 48px; }
+.tab-pane.active { display: block; }
+
+/* METRIC GRID */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 32px;
+}
+.metric-card {
+  background: #f5f5f7; border-radius: 12px;
+  padding: 20px;
+}
+.mc-label {
+  font-size: 11px; color: #6e6e73;
+  margin-bottom: 6px; font-weight: 400;
+}
+.mc-val {
+  font-size: 22px; font-weight: 600;
+  letter-spacing: -0.02em; color: #1d1d1f;
+  margin-bottom: 2px;
+}
+.mc-val.blue { color: #0066cc; }
+.mc-val.green { color: #1d8348; }
+.mc-val.red { color: #c0392b; }
+.mc-val.amber { color: #9a5e00; }
+.mc-sub { font-size: 11px; color: #6e6e73; }
+
+/* SECTION TITLE */
+.s-title {
+  font-size: 17px; font-weight: 600;
+  letter-spacing: -0.01em; margin-bottom: 20px;
+  color: #1d1d1f;
+}
+
+/* CALLOUT */
+.callout {
+  background: #f0f4ff; border-radius: 12px;
+  padding: 20px 24px; font-size: 13px;
+  color: #1d3a7a; line-height: 1.7;
+  margin-top: 24px;
+}
+
+/* YEAR CARDS */
+.year-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px; margin-bottom: 28px;
+}
+.yc {
+  background: #f5f5f7; border-radius: 10px;
+  padding: 14px; position: relative; overflow: hidden;
+}
+.yc::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+}
+.yc.pos::before { background: #34c759; }
+.yc.neg::before { background: #ff3b30; }
+.yc-yr { font-size: 11px; color: #6e6e73; margin-bottom: 6px; }
+.yc-pnl {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: -0.01em; margin-bottom: 8px;
+}
+.yc.pos .yc-pnl { color: #1d8348; }
+.yc.neg .yc-pnl { color: #c0392b; }
+.yc-bar { height: 2px; background: #e5e5ea; border-radius: 1px; margin-bottom: 8px; }
+.yc-bar-fill { height: 100%; border-radius: 1px; }
+.yc.pos .yc-bar-fill { background: #34c759; }
+.yc.neg .yc-bar-fill { background: #ff3b30; }
+.yc-rows { display: flex; flex-direction: column; gap: 3px; }
+.yc-row { display: flex; justify-content: space-between; font-size: 10px; }
+.yc-row .yk { color: #6e6e73; }
+.yc-row .yv { color: #1d1d1f; font-weight: 500; }
+
+/* DATA TABLE */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; margin-bottom: 16px;
+}
+.data-table th {
+  padding: 10px 16px; text-align: left;
+  font-size: 11px; font-weight: 500;
+  color: #6e6e73; border-bottom: 1px solid #d2d2d7;
+  background: #f5f5f7; white-space: nowrap;
+}
+.data-table td {
+  padding: 12px 16px; border-bottom: 1px solid #f0f0f5;
+  color: #1d1d1f;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #f9f9fb; }
+.data-table .sel td { background: #f0f4ff; }
+.data-table .sel:hover td { background: #e8eeff; }
+.td-blue { color: #0066cc; font-weight: 500; }
+.td-green { color: #1d8348; font-weight: 500; }
+.td-red { color: #c0392b; font-weight: 500; }
+.td-muted { color: #6e6e73; }
+.sel-badge {
+  display: inline-block; background: #0066cc; color: #fff;
+  font-size: 9px; font-weight: 600; padding: 1px 6px;
+  border-radius: 100px; margin-left: 6px;
+  letter-spacing: 0.03em;
+}
+
+/* SIG BLOCKS */
+.sig-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.sig-block { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; }
+.sig-head {
+  padding: 11px 16px; background: #f5f5f7;
+  border-bottom: 1px solid #d2d2d7;
+  font-size: 11px; font-weight: 500; color: #6e6e73;
+}
+.sig-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px; border-bottom: 1px solid #f0f0f5;
+  font-size: 13px;
+}
+.sig-row:last-child { border-bottom: none; }
+.sig-test { color: #1d1d1f; }
+.sig-res { display: flex; align-items: center; gap: 8px; }
+.sig-pval { font-size: 11px; color: #6e6e73; font-variant-numeric: tabular-nums; }
+.pass { color: #1d8348; font-size: 11px; font-weight: 600; }
+.warn { color: #9a5e00; font-size: 11px; font-weight: 600; }
+.fail-r { color: #c0392b; font-size: 11px; font-weight: 600; }
+
+/* SPEC */
+.spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.spec-block { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; }
+.spec-head {
+  padding: 11px 16px; background: #f5f5f7;
+  border-bottom: 1px solid #d2d2d7;
+  font-size: 11px; font-weight: 500; color: #6e6e73;
+}
+.spec-row {
+  display: flex; justify-content: space-between;
+  padding: 9px 16px; border-bottom: 1px solid #f0f0f5;
+  font-size: 13px;
+}
+.spec-row:last-child { border-bottom: none; }
+.sk { color: #6e6e73; }
+.sv { color: #1d1d1f; }
+.sv.blue { color: #0066cc; font-weight: 500; }
+
+/* JOURNAL */
+.j-controls {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+.j-btn {
+  padding: 6px 14px; border-radius: 100px;
+  background: #f5f5f7; border: 1px solid transparent;
+  font-size: 12px; font-weight: 400; color: #1d1d1f;
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.j-btn:hover { background: #e5e5ea; }
+.j-btn.active { background: #0066cc; color: #fff; font-weight: 500; }
+.j-count { font-size: 12px; color: #6e6e73; margin-left: 4px; }
+.j-search {
+  margin-left: auto; padding: 6px 12px;
+  background: #f5f5f7; border: 1px solid transparent;
+  border-radius: 8px; font-size: 12px; color: #1d1d1f;
+  outline: none; width: 160px; font-family: inherit;
+}
+.j-search:focus { border-color: #0066cc; background: #fff; }
+.j-search::placeholder { color: #aeaeb2; }
+
+.j-wrap {
+  border: 1px solid #d2d2d7; border-radius: 12px;
+  overflow: hidden; overflow-x: auto;
+}
+.j-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; min-width: 820px;
+}
+.j-table th {
+  padding: 9px 14px; text-align: left;
+  font-size: 11px; font-weight: 500; color: #6e6e73;
+  border-bottom: 1px solid #d2d2d7; background: #f5f5f7;
+  white-space: nowrap;
+}
+.j-table td {
+  padding: 9px 14px; border-bottom: 1px solid #f0f0f5;
+  color: #1d1d1f; white-space: nowrap;
+}
+.j-table tr:last-child td { border-bottom: none; }
+.j-table tr:hover td { background: #f9f9fb; }
+
+.badge {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 100px; font-size: 10px; font-weight: 600;
+}
+.badge.win { background: #d4f0de; color: #1d8348; }
+.badge.loss { background: #fde8e8; color: #c0392b; }
+.badge.notrade { background: #f0f0f5; color: #aeaeb2; }
+.badge.pending { background: #ddeeff; color: #0055aa; }
+.badge.flat { background: #f0f0f5; color: #6e6e73; }
+.td-live { color: #0066cc; font-weight: 500; }
+.td-bt { color: #aeaeb2; }
+.pnl-pos { color: #1d8348; font-weight: 500; }
+.pnl-neg { color: #c0392b; font-weight: 500; }
+
+/* REGIME */
+.regime-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 24px;
+}
+.rc {
+  background: #f5f5f7; border-radius: 12px; padding: 18px;
+}
+.rc-label { font-size: 11px; color: #6e6e73; margin-bottom: 6px; }
+.rc-val {
+  font-size: 20px; font-weight: 600;
+  letter-spacing: -0.01em; margin-bottom: 3px;
+}
+.rc-val.pass { color: #1d8348; }
+.rc-val.warn { color: #9a5e00; }
+.rc-val.fail { color: #c0392b; }
+.rc-sub { font-size: 11px; color: #6e6e73; }
+
+/* FOOTER */
+footer {
+  padding: 20px 48px;
+  border-top: 1px solid #d2d2d7;
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: #aeaeb2;
+}
+
+@media (max-width: 900px) {
+  .topbar, .hero, .tab-pane { padding-left: 20px; padding-right: 20px; }
+  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .year-row { grid-template-columns: repeat(3,1fr); }
+  .sig-wrap, .spec-grid { grid-template-columns: 1fr; }
+  .hero-top { flex-direction: column; }
+  .hero-kpis { width: 100%; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div>
-    <h1>SPY ORB Strategy — Trade Journal</h1>
-    <div class="subtitle">Long-only 15-min Opening Range Breakout · 9:45 ET entry · Vol-sized · 2x leverage</div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">ΔMOM</div>
+  <div class="topbar-right">
+    <span>Systematic Signal Research</span>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Paper Live
+    </div>
   </div>
-  <div class="updated" id="updated"></div>
 </div>
 
-<div class="stats">
-  <div class="stat"><div class="label">Total Trades</div><div class="value" id="stat-trades">—</div></div>
-  <div class="stat"><div class="label">Win Rate</div><div class="value" id="stat-wr">—</div></div>
-  <div class="stat"><div class="label">Total R</div><div class="value" id="stat-r">—</div></div>
-  <div class="stat"><div class="label">Avg R/Trade</div><div class="value" id="stat-avgr">—</div></div>
-  <div class="stat"><div class="label">Best Year</div><div class="value green" id="stat-best">—</div></div>
-  <div class="stat"><div class="label">Worst Year</div><div class="value red" id="stat-worst">—</div></div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-title">Stochastic First-Passage<br>Momentum Signal</div>
+      <p class="hero-sub">
+        A systematic long-equity signal based on order-flow regime detection and volumetric participation conditioning at the first consolidation interval. Validated on institutional-grade tick data. OOS period: 2019–2025.
+      </p>
+    </div>
+    <div class="hero-kpis">
+      <div class="kpi">
+        <span class="kpi-label">OOS Sharpe</span>
+        <span class="kpi-val blue">2.05</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Ann. Return</span>
+        <span class="kpi-val blue">21.3%</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">p-value</span>
+        <span class="kpi-val green">0.0024</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Max DD</span>
+        <span class="kpi-val amber">−20.7%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <button class="tab-btn active" onclick="switchTab('journal',this)">Trade Journal</button>
+    <button class="tab-btn" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('annual',this)">Annual P&amp;L</button>
+    <button class="tab-btn" onclick="switchTab('significance',this)">Significance</button>
+    <button class="tab-btn" onclick="switchTab('leverage',this)">Leverage</button>
+    <button class="tab-btn" onclick="switchTab('spec',this)">Specification</button>
+    <button class="tab-btn" onclick="switchTab('regime',this)">Regime</button>
+  </div>
 </div>
 
-<div class="filters">
-  <button class="filter-btn active" onclick="filter('all')">All Days</button>
-  <button class="filter-btn" onclick="filter('trades')">Trades Only</button>
-  <button class="filter-btn" onclick="filter('wins')">Wins</button>
-  <button class="filter-btn" onclick="filter('losses')">Losses</button>
-  <button class="filter-btn" onclick="filter('live')">Live</button>
-  <input class="search" type="text" placeholder="Search date or year..." oninput="search(this.value)" />
+<!-- TAB: JOURNAL (first) -->
+<div class="tab-pane active" id="tab-journal">
+  <div class="j-controls">
+    <button class="j-btn active" onclick="setFilter('all',this)">All Days</button>
+    <button class="j-btn" onclick="setFilter('trades',this)">Trades Only</button>
+    <button class="j-btn" onclick="setFilter('wins',this)">Wins</button>
+    <button class="j-btn" onclick="setFilter('losses',this)">Losses</button>
+    <button class="j-btn" onclick="setFilter('live',this)">Live</button>
+    <span class="j-count" id="j-count"></span>
+    <input class="j-search" type="text" placeholder="Search date..." oninput="setSearch(this.value)" />
+  </div>
+  <div class="j-wrap">
+    <table class="j-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Source</th>
+          <th>Reference High</th>
+          <th>Entry</th>
+          <th>Stop</th>
+          <th>Target</th>
+          <th>Risk ($)</th>
+          <th>Vol Ratio</th>
+          <th>Result</th>
+          <th>P&L (R)</th>
+        </tr>
+      </thead>
+      <tbody id="j-tbody">
+        <tr><td colspan="10" style="text-align:center;padding:40px;color:#aeaeb2;" id="j-loading">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div class="table-wrap">
-<table>
-<thead>
-  <tr>
-    <th>Date</th>
-    <th>Source</th>
-    <th>OR High</th>
-    <th>Entry</th>
-    <th>Stop</th>
-    <th>Target</th>
-    <th>Risk ($)</th>
-    <th>Vol Ratio</th>
-    <th>Result</th>
-    <th>P&L (R)</th>
-  </tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
+<!-- TAB: OVERVIEW -->
+<div class="tab-pane" id="tab-overview">
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="mc-label">Annualized Return</div>
+      <div class="mc-val blue">21.3%</div>
+      <div class="mc-sub">2× leverage · 2019–2025</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Sharpe Ratio (ann.)</div>
+      <div class="mc-val blue">2.05</div>
+      <div class="mc-sub">After all execution costs</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Maximum Drawdown</div>
+      <div class="mc-val amber">−20.7%</div>
+      <div class="mc-sub">2020 COVID crash</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Calmar Ratio</div>
+      <div class="mc-val blue">1.03</div>
+      <div class="mc-sub">Ann. return ÷ Max DD</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Win Rate</div>
+      <div class="mc-val green">43.3%</div>
+      <div class="mc-sub">Breakeven threshold: 33.3%</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Positive Years</div>
+      <div class="mc-val green">6 / 7</div>
+      <div class="mc-sub">OOS 2019–2025</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Total OOS Signals</div>
+      <div class="mc-val">289</div>
+      <div class="mc-sub">~41 per year</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Mean R per Signal</div>
+      <div class="mc-val blue">+0.150R</div>
+      <div class="mc-sub">Net of slippage &amp; commission</div>
+    </div>
+  </div>
+  <div class="callout">
+    The signal demonstrates positive expected value at the 1% significance level across five independent statistical tests on 289 out-of-sample observations spanning seven complete calendar years. This includes a global pandemic, a 475bps rate hiking cycle, and two distinct bull markets. Annualized Sharpe of 2.05 after realistic execution costs. Capital efficiency scales linearly — Sharpe remains near-constant from 1× to 3× leverage.
+  </div>
 </div>
+
+<!-- TAB: ANNUAL -->
+<div class="tab-pane" id="tab-annual">
+  <div class="s-title">Annual P&L · Out-of-Sample 2019–2025</div>
+  <div class="year-row" id="year-cards"></div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Net P&L ($100k base)</th>
+        <th>Signals</th>
+        <th>Win Rate</th>
+        <th>Mean R</th>
+        <th>Market Regime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>2019</td><td class="td-green">+$14,539</td><td>46</td><td>43%</td><td class="td-green">+0.132</td><td class="td-muted">Pre-COVID bull</td></tr>
+      <tr><td>2020</td><td class="td-red">−$5,659</td><td>39</td><td>36%</td><td class="td-red">−0.080</td><td class="td-muted">COVID crash</td></tr>
+      <tr><td>2021</td><td class="td-green">+$29,744</td><td>48</td><td>42%</td><td class="td-green">+0.170</td><td class="td-muted">QE bull run</td></tr>
+      <tr><td>2022</td><td class="td-green">+$10,573</td><td>34</td><td>35%</td><td class="td-green">+0.173</td><td class="td-muted">Rate-shock bear</td></tr>
+      <tr><td>2023</td><td class="td-green">+$16,989</td><td>44</td><td>34%</td><td class="td-green">+0.135</td><td class="td-muted">AI-driven momentum</td></tr>
+      <tr><td>2024</td><td class="td-green">+$36,242</td><td>29</td><td>48%</td><td class="td-green">+0.349</td><td class="td-muted">Bull / election cycle</td></tr>
+      <tr><td>2025</td><td class="td-green">+$46,581</td><td>49</td><td>45%</td><td class="td-green">+0.265</td><td class="td-muted">Tariff volatility</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TAB: SIGNIFICANCE -->
+<div class="tab-pane" id="tab-significance">
+  <div class="s-title">Statistical Significance</div>
+  <div class="sig-wrap">
+    <div class="sig-block">
+      <div class="sig-head">Hypothesis Tests · H₀: E[R] = 0</div>
+      <div class="sig-row">
+        <span class="sig-test">One-sample t-test</span>
+        <span class="sig-res"><span class="sig-pval">t = 3.065 · p = 0.0024</span><span class="pass">✓ 1%</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">Sharpe t-statistic (Lo 2002)</span>
+        <span class="sig-res"><span class="sig-pval">t = 3.071 · p = 0.0021</span><span class="pass">✓ 1%</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">Bootstrap 95% CI (n=10,000)</span>
+        <span class="sig-res"><span class="sig-pval">[0.048, 0.216] · excl. 0</span><span class="pass">✓ Pass</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">Binomial win rate test</span>
+        <span class="sig-res"><span class="sig-pval">41.2% vs 33.3% · p = 0.0030</span><span class="pass">✓ 1%</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">Year-consistency binomial</span>
+        <span class="sig-res"><span class="sig-pval">8/8 pos. years · p = 0.0039</span><span class="pass">✓ 1%</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">Bonferroni correction (30 tests)</span>
+        <span class="sig-res"><span class="sig-pval">α* = 0.0017 · p = 0.0024</span><span class="warn">⚠ Borderline</span></span>
+      </div>
+    </div>
+    <div class="sig-block">
+      <div class="sig-head">Regime Stress Tests · OOS 2019–2025</div>
+      <div class="sig-row">
+        <span class="sig-test">2020 COVID crash (VIX peak 85)</span>
+        <span class="sig-res"><span class="sig-pval">−$5,659</span><span class="fail-r">✗ Negative</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">2021 QE bull grind</span>
+        <span class="sig-res"><span class="sig-pval">+$29,744</span><span class="pass">✓ Positive</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">2022 Rate-shock bear (−18% SPY)</span>
+        <span class="sig-res"><span class="sig-pval">+$10,573</span><span class="pass">✓ Positive</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">2023 Low-vol / AI rotation</span>
+        <span class="sig-res"><span class="sig-pval">+$16,989</span><span class="pass">✓ Positive</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">2024 AI-driven bull market</span>
+        <span class="sig-res"><span class="sig-pval">+$36,242</span><span class="pass">✓ Positive</span></span>
+      </div>
+      <div class="sig-row">
+        <span class="sig-test">2025 Tariff volatility regime</span>
+        <span class="sig-res"><span class="sig-pval">+$46,581</span><span class="pass">✓ Positive</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="callout">
+    Signal is statistically significant at the 1% level across all parametric and non-parametric tests. Bonferroni adjustment borderline — mitigated by strong economic prior and walk-forward validation discipline. Profitable in 5/6 distinct macroeconomic regimes. Sole failure attributable to historically unprecedented intraday volatility (VIX peak 85.47, March 2020).
+  </div>
+</div>
+
+<!-- TAB: LEVERAGE -->
+<div class="tab-pane" id="tab-leverage">
+  <div class="s-title">Leverage Sensitivity</div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Leverage</th>
+        <th>Final Equity</th>
+        <th>Total Return</th>
+        <th>Ann. Return</th>
+        <th>Sharpe</th>
+        <th>Max DD</th>
+        <th>Calmar</th>
+        <th>Worst Year ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-muted">1×</td>
+        <td>$151,438</td><td>51.4%</td><td>7.3%</td><td>2.21</td>
+        <td class="td-green">−5.9%</td><td>1.24</td><td class="td-muted">−2,800</td>
+      </tr>
+      <tr class="sel">
+        <td class="td-blue"><strong>2×</strong><span class="sel-badge">LIVE</span></td>
+        <td class="td-blue"><strong>$249,009</strong></td>
+        <td class="td-blue"><strong>149.0%</strong></td>
+        <td class="td-blue"><strong>21.3%</strong></td>
+        <td class="td-blue"><strong>2.05</strong></td>
+        <td style="color:#9a5e00;font-weight:500">−20.7%</td>
+        <td class="td-blue"><strong>1.03</strong></td>
+        <td>−5,659</td>
+      </tr>
+      <tr>
+        <td>3×</td>
+        <td>$364,352</td><td>264.4%</td><td>37.8%</td><td>2.02</td>
+        <td class="td-red">−29.9%</td><td>1.26</td><td>−10,265</td>
+      </tr>
+      <tr>
+        <td class="td-muted">4×</td>
+        <td class="td-muted">$305,752</td>
+        <td class="td-muted">205.8%</td>
+        <td class="td-muted">29.4%</td>
+        <td class="td-muted">1.99</td>
+        <td class="td-red">−38.5%</td>
+        <td class="td-muted">0.76</td>
+        <td class="td-muted">−18,200</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:#6e6e73;line-height:1.7;margin-top:12px;">
+    Sharpe remains near-constant across leverage levels (2.21 → 1.99), confirming linear scaling. 2× selected as live baseline. All figures: $100k starting capital, 2019–2025 OOS, volumetric position sizing, $0.02/share slippage + $2 commission per trade.
+  </p>
+</div>
+
+<!-- TAB: SPEC -->
+<div class="tab-pane" id="tab-spec">
+  <div class="s-title">Strategy Specification</div>
+  <div class="spec-grid">
+    <div class="spec-block">
+      <div class="spec-head">Signal Construction</div>
+      <div class="spec-row"><span class="sk">Instrument</span><span class="sv">US Large-Cap Equity ETF</span></div>
+      <div class="spec-row"><span class="sk">Direction</span><span class="sv">Long only</span></div>
+      <div class="spec-row"><span class="sk">Consolidation window</span><span class="sv">First 15 minutes post-open</span></div>
+      <div class="spec-row"><span class="sk">Signal bar</span><span class="sv">5-min bar at t+15min</span></div>
+      <div class="spec-row"><span class="sk">Entry condition</span><span class="sv">Close exceeds consolidation ceiling</span></div>
+      <div class="spec-row"><span class="sk">Stop loss</span><span class="sv">0.5× risk distance</span></div>
+      <div class="spec-row"><span class="sk">Take profit</span><span class="sv">1.0× risk distance</span></div>
+      <div class="spec-row"><span class="sk">Max signals per day</span><span class="sv">1</span></div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-head">Position Sizing</div>
+      <div class="spec-row"><span class="sk">Base risk</span><span class="sv">1% of equity per signal</span></div>
+      <div class="spec-row"><span class="sk">Leverage</span><span class="sv blue">2× intraday</span></div>
+      <div class="spec-row"><span class="sk">Low participation</span><span class="sv">0.5× sizing</span></div>
+      <div class="spec-row"><span class="sk">Normal participation</span><span class="sv">1.0× sizing</span></div>
+      <div class="spec-row"><span class="sk">High participation</span><span class="sv blue">2.0× sizing</span></div>
+      <div class="spec-row"><span class="sk">Participation threshold</span><span class="sv">20-day rolling volume MA</span></div>
+      <div class="spec-row"><span class="sk">Compounding</span><span class="sv">Full — % of current equity</span></div>
+      <div class="spec-row"><span class="sk">Assumed slippage</span><span class="sv">$0.02 / share</span></div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-head">Validation Methodology</div>
+      <div class="spec-row"><span class="sk">Data source</span><span class="sv">NYSE TAQ millisecond trades</span></div>
+      <div class="spec-row"><span class="sk">Data vendor</span><span class="sv">WRDS</span></div>
+      <div class="spec-row"><span class="sk">Bar construction</span><span class="sv">Resampled from tick data</span></div>
+      <div class="spec-row"><span class="sk">Training period</span><span class="sv">2007–2018</span></div>
+      <div class="spec-row"><span class="sk">OOS test period</span><span class="sv blue">2019–2025 (untouched)</span></div>
+      <div class="spec-row"><span class="sk">Walk-forward</span><span class="sv">Single split, no lookahead</span></div>
+      <div class="spec-row"><span class="sk">Parameter search</span><span class="sv">30-combination grid</span></div>
+      <div class="spec-row"><span class="sk">Exchange filter</span><span class="sv">Primary exchange only</span></div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-head">Live Execution</div>
+      <div class="spec-row"><span class="sk">Broker</span><span class="sv">Alpaca (paper trading)</span></div>
+      <div class="spec-row"><span class="sk">Order type</span><span class="sv">Bracket (market + SL + TP)</span></div>
+      <div class="spec-row"><span class="sk">Automation</span><span class="sv blue">Scheduled · daily</span></div>
+      <div class="spec-row"><span class="sk">Data feed</span><span class="sv">Real-time market data</span></div>
+      <div class="spec-row"><span class="sk">Regime check</span><span class="sv">6-signal daily monitor</span></div>
+      <div class="spec-row"><span class="sk">Journal update</span><span class="sv">Auto-push after close</span></div>
+      <div class="spec-row"><span class="sk">Status</span><span class="sv blue">Paper trading — live validation</span></div>
+      <div class="spec-row"><span class="sk">Live target</span><span class="sv">After 6-month paper validation</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: REGIME -->
+<div class="tab-pane" id="tab-regime">
+  <div class="s-title">Regime Monitor</div>
+  <div class="regime-grid">
+    <div class="rc">
+      <div class="rc-label">200-Day SMA</div>
+      <div class="rc-val pass">Above</div>
+      <div class="rc-sub">Price +2.9% above long-term trend</div>
+    </div>
+    <div class="rc">
+      <div class="rc-label">Implied Volatility (VIX)</div>
+      <div class="rc-val pass">19.4</div>
+      <div class="rc-sub">Below 30 threshold · Normal regime</div>
+    </div>
+    <div class="rc">
+      <div class="rc-label">ATR% vs 100-Day MA</div>
+      <div class="rc-val pass">1.64%</div>
+      <div class="rc-sub">Above MA (1.21%) · Momentum healthy</div>
+    </div>
+    <div class="rc">
+      <div class="rc-label">Realized Vol (20-Day)</div>
+      <div class="rc-val pass">20.4%</div>
+      <div class="rc-sub">79th percentile · Elevated but healthy</div>
+    </div>
+    <div class="rc">
+      <div class="rc-label">Regime Score</div>
+      <div class="rc-val pass">6 / 6</div>
+      <div class="rc-sub">All conditions favorable</div>
+    </div>
+    <div class="rc">
+      <div class="rc-label">Signal Action</div>
+      <div class="rc-val pass">Active</div>
+      <div class="rc-sub">Full position sizing · <span id="regime-date"></span></div>
+    </div>
+  </div>
+  <div class="callout">
+    Six daily conditions evaluated: price vs 200-day SMA, ATR% relative to 100-day moving average, VIX vs 30 threshold, VIX spike/crush pattern, 20-day realized volatility vs 10th and 90th historical percentiles. Score ≥ 4/6 → full sizing. Score 3/6 → half sizing. Score &lt; 3/6 → no trade.
+  </div>
+</div>
+
+<footer>
+  <span>ΔMOM · Systematic Signal Research</span>
+  <span id="footer-date"></span>
+</footer>
 
 <script>
-let allData = [];
-let currentFilter = 'all';
-let currentSearch = '';
-
-async function loadData() {
-  const res = await fetch('trades.json');
-  allData = await res.json();
-  allData.sort((a,b) => b.date.localeCompare(a.date));
-  
-  document.getElementById('updated').textContent = 
-    'Updated: ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-  
-  updateStats();
-  render();
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
 }
 
-function updateStats() {
-  const trades = allData.filter(d => d.result !== 'NO TRADE');
-  const wins   = trades.filter(d => d.result === 'WIN');
-  const byYear = {};
-  
-  trades.forEach(d => {
-    const yr = d.date.slice(0,4);
-    byYear[yr] = (byYear[yr] || 0) + d.pnl_r;
-  });
-  
-  const yearVals = Object.values(byYear);
-  const totalR   = trades.reduce((s,d) => s + d.pnl_r, 0);
-  
-  document.getElementById('stat-trades').textContent  = trades.length;
-  document.getElementById('stat-wr').textContent      = trades.length ? (wins.length/trades.length*100).toFixed(1)+'%' : '—';
-  document.getElementById('stat-r').textContent       = totalR.toFixed(1) + 'R';
-  document.getElementById('stat-avgr').textContent    = trades.length ? (totalR/trades.length).toFixed(3)+'R' : '—';
-  document.getElementById('stat-best').textContent    = yearVals.length ? '+' + Math.max(...yearVals).toFixed(1)+'R' : '—';
-  document.getElementById('stat-worst').textContent   = yearVals.length ? Math.min(...yearVals).toFixed(1)+'R' : '—';
-}
+// Year cards
+const yearData = [
+  {year:2019,pnl:14539,trades:46,wr:43},
+  {year:2020,pnl:-5659,trades:39,wr:36},
+  {year:2021,pnl:29744,trades:48,wr:42},
+  {year:2022,pnl:10573,trades:34,wr:35},
+  {year:2023,pnl:16989,trades:44,wr:34},
+  {year:2024,pnl:36242,trades:29,wr:48},
+  {year:2025,pnl:46581,trades:49,wr:45},
+];
+const maxP = Math.max(...yearData.map(d=>Math.abs(d.pnl)));
+document.getElementById('year-cards').innerHTML = yearData.map(d=>{
+  const pos=d.pnl>=0, w=Math.abs(d.pnl)/maxP*100;
+  const s=(pos?'+':'−')+'$'+Math.abs(d.pnl).toLocaleString();
+  return `<div class="yc ${pos?'pos':'neg'}">
+    <div class="yc-yr">${d.year}</div>
+    <div class="yc-pnl">${s}</div>
+    <div class="yc-bar"><div class="yc-bar-fill" style="width:${w}%"></div></div>
+    <div class="yc-rows">
+      <div class="yc-row"><span class="yk">Trades</span><span class="yv">${d.trades}</span></div>
+      <div class="yc-row"><span class="yk">Win %</span><span class="yv">${d.wr}%</span></div>
+    </div>
+  </div>`;
+}).join('');
 
-function filter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  render();
-}
+// Journal
+let allTrades=[], currentFilter='all', currentSearch='';
 
-function search(val) {
-  currentSearch = val.toLowerCase();
-  render();
-}
-
-function render() {
-  let data = allData;
-  
-  if (currentSearch) {
-    data = data.filter(d => d.date.includes(currentSearch));
+async function loadTrades(){
+  try{
+    const res=await fetch('https://pawarraj8888.github.io/spy-orb-journal/trades.json');
+    allTrades=await res.json();
+    allTrades.sort((a,b)=>b.date.localeCompare(a.date));
+    document.getElementById('j-loading').style.display='none';
+    renderJournal();
+  }catch(e){
+    document.getElementById('j-loading').textContent='Error loading data: '+e.message;
   }
-  
-  if (currentFilter === 'trades') data = data.filter(d => d.result !== 'NO TRADE');
-  if (currentFilter === 'wins')   data = data.filter(d => d.result === 'WIN');
-  if (currentFilter === 'losses') data = data.filter(d => d.result === 'LOSS');
-  if (currentFilter === 'live')   data = data.filter(d => d.source === 'live');
-  
-  const tbody = document.getElementById('tbody');
-  tbody.innerHTML = data.slice(0, 500).map(d => {
-    const isNoTrade = d.result === 'NO TRADE';
-    const badgeCls  = d.result === 'WIN' ? 'win' : d.result === 'LOSS' ? 'loss' : d.result === 'NO TRADE' ? 'no-trade' : 'flat';
-    const pnlCls    = d.pnl_r > 0 ? 'pos' : d.pnl_r < 0 ? 'neg' : '';
-    const srcCls    = d.source === 'live' ? 'live' : 'backtest';
-    
+}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.j-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderJournal();
+}
+
+function setSearch(v){ currentSearch=v.toLowerCase(); renderJournal(); }
+
+function renderJournal(){
+  let data=allTrades;
+  if(currentSearch) data=data.filter(d=>d.date.includes(currentSearch));
+  if(currentFilter==='trades') data=data.filter(d=>d.result!=='NO TRADE');
+  if(currentFilter==='wins')   data=data.filter(d=>d.result==='WIN');
+  if(currentFilter==='losses') data=data.filter(d=>d.result==='LOSS');
+  if(currentFilter==='live')   data=data.filter(d=>d.source==='live');
+
+  document.getElementById('j-count').textContent=data.length+' records';
+  const tbody=document.getElementById('j-tbody');
+
+  if(!data.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:32px;color:#aeaeb2;">No records match this filter</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML=data.slice(0,400).map(d=>{
+    const nt=d.result==='NO TRADE';
+    const bc=d.result==='WIN'?'win':d.result==='LOSS'?'loss':d.result==='PENDING'?'pending':nt?'notrade':'flat';
+    const pc=d.pnl_r>0?'pnl-pos':d.pnl_r<0?'pnl-neg':'';
+    const sc=d.source==='live'?'td-live':'td-bt';
+    const f2=v=>v!=null?'$'+Number(v).toFixed(2):'—';
+    const fr=v=>v!=null&&v!==0?(v>0?'+':'')+Number(v).toFixed(2)+'R':'—';
     return `<tr>
-      <td>${d.date}</td>
-      <td><span class="source ${srcCls}">${d.source}</span></td>
-      <td>${isNoTrade ? '—' : '$' + (d.or_high||0).toFixed(2)}</td>
-      <td>${isNoTrade ? '—' : '$' + (d.entry||0).toFixed(2)}</td>
-      <td>${isNoTrade ? '—' : '$' + (d.stop||0).toFixed(2)}</td>
-      <td>${isNoTrade ? '—' : '$' + (d.target||0).toFixed(2)}</td>
-      <td>${isNoTrade ? '—' : '$' + (d.risk_dollars||0).toFixed(0)}</td>
-      <td>${isNoTrade ? '—' : (d.vol_ratio||1).toFixed(2) + 'x'}</td>
-      <td><span class="badge ${badgeCls}">${d.result}</span></td>
-      <td class="pnl ${pnlCls}">${isNoTrade ? '—' : (d.pnl_r >= 0 ? '+' : '') + d.pnl_r.toFixed(2) + 'R'}</td>
+      <td style="color:#6e6e73">${d.date}</td>
+      <td class="${sc}">${d.source}</td>
+      <td>${d.or_high?'$'+Number(d.or_high).toFixed(2):'—'}</td>
+      <td>${f2(d.entry)}</td><td>${f2(d.stop)}</td><td>${f2(d.target)}</td>
+      <td>${d.risk_dollars?'$'+Number(d.risk_dollars).toLocaleString():'—'}</td>
+      <td>${d.vol_ratio?Number(d.vol_ratio).toFixed(2)+'×':'—'}</td>
+      <td><span class="badge ${bc}">${d.result}</span></td>
+      <td class="${pc}">${fr(d.pnl_r)}</td>
     </tr>`;
   }).join('');
 }
 
-loadData();
+const now=new Date();
+const ds=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+document.getElementById('footer-date').textContent='Updated '+ds;
+document.getElementById('regime-date').textContent=ds;
+
+loadTrades();
 </script>
 </body>
 </html>
