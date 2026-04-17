@@ -285,11 +285,11 @@ const D = {
     spec:{
       signal:[{k:'Instrument',v:'E-mini S&P 500 Futures (ES)'},{k:'Direction',v:'Long only'},{k:'range',v:'na'},{k:'Signal bar',v:'NA'},{k:'Stop loss',v:'0.5x risk distance'},{k:'Take profit',v:'1.0x risk distance'},{k:'Max signals per day',v:'1'}],
       sizing:[{k:'Base risk',v:'1% of equity per signal'},{k:'Leverage',v:'2x intraday (via margin)',blue:true},{k:'Low participation',v:'0.5x sizing (vol below MA20)'},{k:'Normal participation',v:'1.0x sizing (vol 1 to 2x MA20)'},{k:'High participation',v:'2.0x sizing (vol above 2x MA20)',blue:true},{k:'Bar volume cap',v:'Max 20% of 9:45 bar volume'},{k:'Commission',v:'$5 round-trip per contract'}],
-      validation:[{k:'Data source',v:'CME tick data via Databento'},{k:'Bar construction',v:'Resampled 1-min to 5-min OHLCV'},{k:'Training period',v:'2016 to 2018 (negative control)'},{k:'OOS test period',v:'2019 to 2025 (untouched)',blue:true},{k:'CPCV',v:'6 splits, 21-day embargo, PBO = 0.00'},{k:'Newey-West lags',v:'5 lags (Andrews 1991 rule)'}],
+      validation:[{k:'Data source',v:'CME tick data via WRDS'},{k:'Bar construction',v:'Resampled 1-min to 5-min OHLCV'},{k:'Training period',v:'2016 to 2018 (negative control)'},{k:'OOS test period',v:'2019 to 2025 (untouched)',blue:true},{k:'CPCV',v:'6 splits, 21-day embargo, PBO = 0.00'},{k:'Newey-West lags',v:'5 lags (Andrews 1991 rule)'}],
       execution:[{k:'Order type',v:'Bracket (market + SL + TP)'},{k:'Slippage model',v:'10% of bid-ask spread'},{k:'Bar vol cap',v:'20% max participation per trade'},{k:'Status',v:'Backtest validated',blue:true},{k:'Next step',v:'Live paper trading on futures'},{k:'Capacity ceiling',v:'$100M+ with algo execution'}]
     },
     journalUrl:'https://pawarraj8888.github.io/spy-orb-journal/es_trades.json',
-    journalNote:'Backtest trades generated from CME tick data. ,
+    journalNote:'Backtest trades generated from CME tick data. Run generate_es_trades.py then push es_trades.json to GitHub to populate this journal.',
     hasRegime:false, hasCapacity:true,
   }
 };
