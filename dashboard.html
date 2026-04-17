@@ -3,831 +3,484 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ΔMOM · Systematic Signal Research</title>
+<title>DMOM · Systematic Signal Research</title>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { background: #fff; color: #1d1d1f; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; }
 
-body {
-  background: #fff;
-  color: #1d1d1f;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* TOP BAR */
-.topbar {
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid #d2d2d7;
-  position: sticky; top: 0; z-index: 100;
-  padding: 0 48px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 52px;
-}
-.topbar-logo {
-  font-size: 17px; font-weight: 600;
-  color: #1d1d1f; letter-spacing: -0.01em;
-}
-.topbar-right {
-  display: flex; align-items: center; gap: 20px;
-}
-.topbar-right span {
-  font-size: 12px; color: #6e6e73;
-}
-.live-badge {
-  display: flex; align-items: center; gap: 5px;
-  background: #f5f5f7; border-radius: 100px;
-  padding: 4px 10px; font-size: 11px; color: #1d1d1f; font-weight: 500;
-}
-.live-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #34c759;
-  animation: pulse 2s infinite;
-}
+.topbar { background: rgba(255,255,255,0.95); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid #d2d2d7; position: sticky; top: 0; z-index: 100; padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+.topbar-logo { font-size: 17px; font-weight: 600; color: #1d1d1f; letter-spacing: -0.01em; }
+.topbar-right { display: flex; align-items: center; gap: 20px; }
+.topbar-right span { font-size: 12px; color: #6e6e73; }
+.live-badge { display: flex; align-items: center; gap: 5px; background: #f5f5f7; border-radius: 100px; padding: 4px 10px; font-size: 11px; color: #1d1d1f; font-weight: 500; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #34c759; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+/* PROMINENT INSTRUMENT SWITCHER */
+.inst-panel { background: #1d1d1f; padding: 20px 48px; display: flex; align-items: center; gap: 20px; }
+.inst-panel-label { font-size: 10px; font-weight: 700; color: #6e6e73; text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; padding-right: 20px; border-right: 1px solid #3a3a3c; }
+.inst-cards { display: flex; gap: 12px; }
+.inst-card { display: flex; flex-direction: column; gap: 3px; padding: 14px 22px; border-radius: 12px; border: 1.5px solid #3a3a3c; background: #2c2c2e; cursor: pointer; transition: all 0.2s; min-width: 200px; font-family: inherit; text-align: left; }
+.inst-card:hover { border-color: #0a84ff; background: #1c2a3a; }
+.inst-card.active { border-color: #0a84ff; background: #0a84ff18; box-shadow: 0 0 0 3px #0a84ff22; }
+.ic-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+.ic-ticker { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: #fff; }
+.inst-card.active .ic-ticker { color: #0a84ff; }
+.ic-badge { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 100px; letter-spacing: 0.04em; }
+.ic-badge.paper { background: #0d3d20; color: #34c759; }
+.ic-badge.bt    { background: #3a2e00; color: #ffd60a; }
+.ic-name { font-size: 11px; color: #8e8e93; margin-bottom: 6px; }
+.ic-stat { font-size: 14px; font-weight: 600; color: #ebebf5; }
+.inst-card.active .ic-stat { color: #0a84ff; }
+.ic-sub { font-size: 10px; color: #636366; margin-top: 1px; }
+
 /* HERO */
-.hero {
-  padding: 48px 48px 0;
-  border-bottom: 1px solid #d2d2d7;
-}
-.hero-top {
-  display: flex; justify-content: space-between;
-  align-items: flex-start; gap: 48px;
-  margin-bottom: 36px;
-}
-.hero-title {
-  font-size: 28px; font-weight: 600;
-  letter-spacing: -0.02em; line-height: 1.15;
-  margin-bottom: 10px; color: #1d1d1f;
-  max-width: 540px;
-}
-.hero-sub {
-  font-size: 13px; color: #6e6e73;
-  max-width: 480px; line-height: 1.6;
-}
-.hero-kpis {
-  display: flex; gap: 0;
-  border: 1px solid #d2d2d7; border-radius: 12px;
-  overflow: hidden; flex-shrink: 0;
-}
-.kpi {
-  padding: 16px 24px;
-  border-right: 1px solid #d2d2d7;
-  display: flex; flex-direction: column; gap: 4px;
-}
+.hero { padding: 40px 48px 0; border-bottom: 1px solid #d2d2d7; }
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 48px; margin-bottom: 32px; }
+.hero-title { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 10px; color: #1d1d1f; max-width: 500px; }
+.hero-sub { font-size: 13px; color: #6e6e73; max-width: 460px; line-height: 1.6; }
+.hero-kpis { display: flex; gap: 0; border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; flex-shrink: 0; }
+.kpi { padding: 14px 20px; border-right: 1px solid #d2d2d7; display: flex; flex-direction: column; gap: 4px; }
 .kpi:last-child { border-right: none; }
-.kpi-label {
-  font-size: 11px; color: #6e6e73;
-  font-weight: 400; white-space: nowrap;
-}
-.kpi-val {
-  font-size: 20px; font-weight: 600;
-  letter-spacing: -0.02em; color: #1d1d1f;
-}
+.kpi-label { font-size: 11px; color: #6e6e73; white-space: nowrap; }
+.kpi-val { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
 .kpi-val.blue { color: #0066cc; }
 .kpi-val.green { color: #1d8348; }
 .kpi-val.amber { color: #9a5e00; }
 
-/* TABS */
-.tabs-wrap {
-  display: flex; gap: 0; overflow-x: auto;
-}
-.tab-btn {
-  padding: 12px 20px;
-  font-size: 13px; font-weight: 400;
-  color: #6e6e73; background: none; border: none;
-  cursor: pointer; white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: color 0.15s;
-  font-family: inherit;
-}
+.tabs-wrap { display: flex; overflow-x: auto; }
+.tab-btn { padding: 12px 18px; font-size: 13px; color: #6e6e73; background: none; border: none; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: color 0.15s; font-family: inherit; }
 .tab-btn:hover { color: #1d1d1f; }
-.tab-btn.active {
-  color: #0066cc; font-weight: 500;
-  border-bottom-color: #0066cc;
-}
+.tab-btn.active { color: #0066cc; font-weight: 500; border-bottom-color: #0066cc; }
 
-/* PANES */
-.tab-pane { display: none; padding: 40px 48px; }
+.tab-pane { display: none; padding: 36px 48px; }
 .tab-pane.active { display: block; }
 
-/* METRIC GRID */
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px; margin-bottom: 32px;
-}
-.metric-card {
-  background: #f5f5f7; border-radius: 12px;
-  padding: 20px;
-}
-.mc-label {
-  font-size: 11px; color: #6e6e73;
-  margin-bottom: 6px; font-weight: 400;
-}
-.mc-val {
-  font-size: 22px; font-weight: 600;
-  letter-spacing: -0.02em; color: #1d1d1f;
-  margin-bottom: 2px;
-}
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+.metric-card { background: #f5f5f7; border-radius: 12px; padding: 18px; }
+.mc-label { font-size: 11px; color: #6e6e73; margin-bottom: 6px; }
+.mc-val { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 2px; }
 .mc-val.blue { color: #0066cc; }
 .mc-val.green { color: #1d8348; }
-.mc-val.red { color: #c0392b; }
 .mc-val.amber { color: #9a5e00; }
 .mc-sub { font-size: 11px; color: #6e6e73; }
 
-/* SECTION TITLE */
-.s-title {
-  font-size: 17px; font-weight: 600;
-  letter-spacing: -0.01em; margin-bottom: 20px;
-  color: #1d1d1f;
-}
+.s-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 18px; }
+.callout { background: #f0f4ff; border-radius: 12px; padding: 18px 22px; font-size: 13px; color: #1d3a7a; line-height: 1.7; margin-top: 20px; }
 
-/* CALLOUT */
-.callout {
-  background: #f0f4ff; border-radius: 12px;
-  padding: 20px 24px; font-size: 13px;
-  color: #1d3a7a; line-height: 1.7;
-  margin-top: 24px;
-}
-
-/* YEAR CARDS */
-.year-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px; margin-bottom: 28px;
-}
-.yc {
-  background: #f5f5f7; border-radius: 10px;
-  padding: 14px; position: relative; overflow: hidden;
-}
-.yc::before {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-}
+.year-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 24px; }
+.yc { background: #f5f5f7; border-radius: 10px; padding: 12px; position: relative; overflow: hidden; }
+.yc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .yc.pos::before { background: #34c759; }
 .yc.neg::before { background: #ff3b30; }
-.yc-yr { font-size: 11px; color: #6e6e73; margin-bottom: 6px; }
-.yc-pnl {
-  font-size: 14px; font-weight: 600;
-  letter-spacing: -0.01em; margin-bottom: 8px;
-}
+.yc-yr { font-size: 11px; color: #6e6e73; margin-bottom: 5px; }
+.yc-pnl { font-size: 13px; font-weight: 600; margin-bottom: 7px; }
 .yc.pos .yc-pnl { color: #1d8348; }
 .yc.neg .yc-pnl { color: #c0392b; }
-.yc-bar { height: 2px; background: #e5e5ea; border-radius: 1px; margin-bottom: 8px; }
+.yc-bar { height: 2px; background: #e5e5ea; border-radius: 1px; margin-bottom: 7px; }
 .yc-bar-fill { height: 100%; border-radius: 1px; }
 .yc.pos .yc-bar-fill { background: #34c759; }
 .yc.neg .yc-bar-fill { background: #ff3b30; }
-.yc-rows { display: flex; flex-direction: column; gap: 3px; }
+.yc-rows { display: flex; flex-direction: column; gap: 2px; }
 .yc-row { display: flex; justify-content: space-between; font-size: 10px; }
 .yc-row .yk { color: #6e6e73; }
 .yc-row .yv { color: #1d1d1f; font-weight: 500; }
 
-/* DATA TABLE */
-.data-table {
-  width: 100%; border-collapse: collapse;
-  font-size: 13px; margin-bottom: 16px;
-}
-.data-table th {
-  padding: 10px 16px; text-align: left;
-  font-size: 11px; font-weight: 500;
-  color: #6e6e73; border-bottom: 1px solid #d2d2d7;
-  background: #f5f5f7; white-space: nowrap;
-}
-.data-table td {
-  padding: 12px 16px; border-bottom: 1px solid #f0f0f5;
-  color: #1d1d1f;
-}
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+.data-table th { padding: 9px 14px; text-align: left; font-size: 11px; font-weight: 500; color: #6e6e73; border-bottom: 1px solid #d2d2d7; background: #f5f5f7; white-space: nowrap; }
+.data-table td { padding: 11px 14px; border-bottom: 1px solid #f0f0f5; }
 .data-table tr:last-child td { border-bottom: none; }
 .data-table tr:hover td { background: #f9f9fb; }
 .data-table .sel td { background: #f0f4ff; }
-.data-table .sel:hover td { background: #e8eeff; }
 .td-blue { color: #0066cc; font-weight: 500; }
 .td-green { color: #1d8348; font-weight: 500; }
 .td-red { color: #c0392b; font-weight: 500; }
 .td-muted { color: #6e6e73; }
-.sel-badge {
-  display: inline-block; background: #0066cc; color: #fff;
-  font-size: 9px; font-weight: 600; padding: 1px 6px;
-  border-radius: 100px; margin-left: 6px;
-  letter-spacing: 0.03em;
-}
+.sel-badge { display: inline-block; background: #0066cc; color: #fff; font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 100px; margin-left: 6px; }
 
-/* SIG BLOCKS */
-.sig-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.sig-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 .sig-block { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; }
-.sig-head {
-  padding: 11px 16px; background: #f5f5f7;
-  border-bottom: 1px solid #d2d2d7;
-  font-size: 11px; font-weight: 500; color: #6e6e73;
-}
-.sig-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 16px; border-bottom: 1px solid #f0f0f5;
-  font-size: 13px;
-}
+.sig-head { padding: 10px 16px; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; font-size: 11px; font-weight: 500; color: #6e6e73; }
+.sig-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px; border-bottom: 1px solid #f0f0f5; font-size: 13px; }
 .sig-row:last-child { border-bottom: none; }
-.sig-test { color: #1d1d1f; }
 .sig-res { display: flex; align-items: center; gap: 8px; }
-.sig-pval { font-size: 11px; color: #6e6e73; font-variant-numeric: tabular-nums; }
+.sig-pval { font-size: 11px; color: #6e6e73; }
 .pass { color: #1d8348; font-size: 11px; font-weight: 600; }
 .warn { color: #9a5e00; font-size: 11px; font-weight: 600; }
 .fail-r { color: #c0392b; font-size: 11px; font-weight: 600; }
 
-/* SPEC */
+.compare-wrap { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; margin-top: 20px; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.compare-table th { padding: 9px 16px; font-size: 11px; font-weight: 500; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; text-align: left; }
+.compare-table th.es-col { color: #0066cc; }
+.compare-table th.spy-col { color: #6e6e73; }
+.compare-table td { padding: 9px 16px; border-bottom: 1px solid #f0f0f5; }
+.compare-table tr:last-child td { border-bottom: none; }
+.metric-name { color: #6e6e73; font-size: 12px; }
+.es-val { font-weight: 500; }
+.spy-val { color: #6e6e73; }
+.better { color: #1d8348; font-weight: 600; }
+
 .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .spec-block { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; }
-.spec-head {
-  padding: 11px 16px; background: #f5f5f7;
-  border-bottom: 1px solid #d2d2d7;
-  font-size: 11px; font-weight: 500; color: #6e6e73;
-}
-.spec-row {
-  display: flex; justify-content: space-between;
-  padding: 9px 16px; border-bottom: 1px solid #f0f0f5;
-  font-size: 13px;
-}
+.spec-head { padding: 10px 16px; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; font-size: 11px; font-weight: 500; color: #6e6e73; }
+.spec-row { display: flex; justify-content: space-between; padding: 8px 16px; border-bottom: 1px solid #f0f0f5; font-size: 13px; }
 .spec-row:last-child { border-bottom: none; }
 .sk { color: #6e6e73; }
-.sv { color: #1d1d1f; }
 .sv.blue { color: #0066cc; font-weight: 500; }
 
-/* JOURNAL */
-.j-controls {
-  display: flex; gap: 8px; align-items: center;
-  margin-bottom: 16px; flex-wrap: wrap;
-}
-.j-btn {
-  padding: 6px 14px; border-radius: 100px;
-  background: #f5f5f7; border: 1px solid transparent;
-  font-size: 12px; font-weight: 400; color: #1d1d1f;
-  cursor: pointer; transition: all 0.15s; font-family: inherit;
-}
+.cap-wrap { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; }
+.cap-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cap-table th { padding: 9px 16px; font-size: 11px; font-weight: 500; color: #6e6e73; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; text-align: left; }
+.cap-table td { padding: 10px 16px; border-bottom: 1px solid #f0f0f5; }
+.cap-table tr:last-child td { border-bottom: none; }
+.cap-ok   { color: #1d8348; font-weight: 500; }
+.cap-warn { color: #9a5e00; font-weight: 500; }
+
+.j-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+.j-btn { padding: 6px 14px; border-radius: 100px; background: #f5f5f7; border: none; font-size: 12px; color: #1d1d1f; cursor: pointer; font-family: inherit; }
 .j-btn:hover { background: #e5e5ea; }
 .j-btn.active { background: #0066cc; color: #fff; font-weight: 500; }
-.j-count { font-size: 12px; color: #6e6e73; margin-left: 4px; }
-.j-search {
-  margin-left: auto; padding: 6px 12px;
-  background: #f5f5f7; border: 1px solid transparent;
-  border-radius: 8px; font-size: 12px; color: #1d1d1f;
-  outline: none; width: 160px; font-family: inherit;
-}
+.j-count { font-size: 12px; color: #6e6e73; }
+.j-search { margin-left: auto; padding: 6px 12px; background: #f5f5f7; border: 1px solid transparent; border-radius: 8px; font-size: 12px; outline: none; width: 160px; font-family: inherit; }
 .j-search:focus { border-color: #0066cc; background: #fff; }
 .j-search::placeholder { color: #aeaeb2; }
-
-.j-wrap {
-  border: 1px solid #d2d2d7; border-radius: 12px;
-  overflow: hidden; overflow-x: auto;
-}
-.j-table {
-  width: 100%; border-collapse: collapse;
-  font-size: 12px; min-width: 820px;
-}
-.j-table th {
-  padding: 9px 14px; text-align: left;
-  font-size: 11px; font-weight: 500; color: #6e6e73;
-  border-bottom: 1px solid #d2d2d7; background: #f5f5f7;
-  white-space: nowrap;
-}
-.j-table td {
-  padding: 9px 14px; border-bottom: 1px solid #f0f0f5;
-  color: #1d1d1f; white-space: nowrap;
-}
+.j-wrap { border: 1px solid #d2d2d7; border-radius: 12px; overflow: hidden; overflow-x: auto; }
+.j-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+.j-table th { padding: 9px 12px; text-align: left; font-size: 11px; font-weight: 500; color: #6e6e73; border-bottom: 1px solid #d2d2d7; background: #f5f5f7; white-space: nowrap; }
+.j-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f5; white-space: nowrap; }
 .j-table tr:last-child td { border-bottom: none; }
 .j-table tr:hover td { background: #f9f9fb; }
-
-.badge {
-  display: inline-block; padding: 2px 8px;
-  border-radius: 100px; font-size: 10px; font-weight: 600;
-}
-.badge.win { background: #d4f0de; color: #1d8348; }
-.badge.loss { background: #fde8e8; color: #c0392b; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 600; }
+.badge.win     { background: #d4f0de; color: #1d8348; }
+.badge.loss    { background: #fde8e8; color: #c0392b; }
 .badge.notrade { background: #f0f0f5; color: #aeaeb2; }
+.badge.flat    { background: #f0f0f5; color: #6e6e73; }
 .badge.pending { background: #ddeeff; color: #0055aa; }
-.badge.flat { background: #f0f0f5; color: #6e6e73; }
 .td-live { color: #0066cc; font-weight: 500; }
 .td-bt { color: #aeaeb2; }
 .pnl-pos { color: #1d8348; font-weight: 500; }
 .pnl-neg { color: #c0392b; font-weight: 500; }
+.fomc-pill { display: inline-block; font-size: 9px; color: #9a5e00; background: #fff4cc; border-radius: 4px; padding: 1px 5px; margin-left: 4px; font-weight: 600; vertical-align: middle; }
+.info-banner { background: #fff8e6; border: 1px solid #ffe8a0; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #7a5800; margin-bottom: 14px; }
 
-/* REGIME */
-.regime-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 12px; margin-bottom: 24px;
-}
-.rc {
-  background: #f5f5f7; border-radius: 12px; padding: 18px;
-}
-.rc-label { font-size: 11px; color: #6e6e73; margin-bottom: 6px; }
-.rc-val {
-  font-size: 20px; font-weight: 600;
-  letter-spacing: -0.01em; margin-bottom: 3px;
-}
+.regime-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.rc { background: #f5f5f7; border-radius: 12px; padding: 16px; }
+.rc-label { font-size: 11px; color: #6e6e73; margin-bottom: 5px; }
+.rc-val { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
 .rc-val.pass { color: #1d8348; }
-.rc-val.warn { color: #9a5e00; }
-.rc-val.fail { color: #c0392b; }
-.rc-sub { font-size: 11px; color: #6e6e73; }
 
-/* FOOTER */
-footer {
-  padding: 20px 48px;
-  border-top: 1px solid #d2d2d7;
-  display: flex; justify-content: space-between;
-  font-size: 11px; color: #aeaeb2;
-}
+footer { padding: 18px 48px; border-top: 1px solid #d2d2d7; display: flex; justify-content: space-between; font-size: 11px; color: #aeaeb2; }
 
 @media (max-width: 900px) {
-  .topbar, .hero, .tab-pane { padding-left: 20px; padding-right: 20px; }
+  .topbar, .hero, .tab-pane, .inst-panel { padding-left: 20px; padding-right: 20px; }
   .metric-grid { grid-template-columns: 1fr 1fr; }
   .year-row { grid-template-columns: repeat(3,1fr); }
   .sig-wrap, .spec-grid { grid-template-columns: 1fr; }
   .hero-top { flex-direction: column; }
-  .hero-kpis { width: 100%; }
+  .inst-cards { flex-wrap: wrap; }
+  .inst-card { min-width: 160px; }
 }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-logo">ΔMOM</div>
+  <div class="topbar-logo">DMOM</div>
   <div class="topbar-right">
     <span>Systematic Signal Research</span>
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      Paper Live
-    </div>
+    <div class="live-badge"><div class="live-dot"></div>Paper Live</div>
   </div>
 </div>
 
-<!-- HERO -->
+<!-- DARK PROMINENT INSTRUMENT SWITCHER -->
+<div class="inst-panel">
+  <span class="inst-panel-label">Instrument</span>
+  <div class="inst-cards">
+    <button class="inst-card active" id="inst-spy" onclick="switchInstrument('spy',this)">
+      <div class="ic-top">
+        <span class="ic-ticker">SPY</span>
+        <span class="ic-badge paper">Paper Live</span>
+      </div>
+      <div class="ic-name">S&amp;P 500 ETF · SPDR</div>
+      <div class="ic-stat">Sharpe 2.05 · Ann. 21.3%</div>
+      <div class="ic-sub">6 of 7 years profitable · $100k cap</div>
+    </button>
+    <button class="inst-card" id="inst-es" onclick="switchInstrument('es',this)">
+      <div class="ic-top">
+        <span class="ic-ticker">ES</span>
+        <span class="ic-badge bt">Backtest</span>
+      </div>
+      <div class="ic-name">E-mini S&amp;P 500 Futures · CME</div>
+      <div class="ic-stat">Sharpe 2.53 · Ann. 25.9%</div>
+      <div class="ic-sub">7 of 7 years profitable · $100M+ cap</div>
+    </button>
+  </div>
+</div>
+
 <div class="hero">
   <div class="hero-top">
     <div>
-      <div class="hero-title">Stochastic First-Passage<br>Momentum Signal</div>
-      <p class="hero-sub">
-        A systematic long-equity signal based on order-flow regime detection and volumetric participation conditioning at the first consolidation interval. Validated on institutional-grade tick data. OOS period: 2019–2025.
-      </p>
+      <div class="hero-title" id="hero-title"></div>
+      <p class="hero-sub" id="hero-sub"></p>
     </div>
-    <div class="hero-kpis">
-      <div class="kpi">
-        <span class="kpi-label">OOS Sharpe</span>
-        <span class="kpi-val blue">2.05</span>
-      </div>
-      <div class="kpi">
-        <span class="kpi-label">Ann. Return</span>
-        <span class="kpi-val blue">21.3%</span>
-      </div>
-      <div class="kpi">
-        <span class="kpi-label">p-value</span>
-        <span class="kpi-val green">0.0024</span>
-      </div>
-      <div class="kpi">
-        <span class="kpi-label">Max DD</span>
-        <span class="kpi-val amber">−20.7%</span>
-      </div>
-    </div>
+    <div class="hero-kpis" id="hero-kpis"></div>
   </div>
-
-  <!-- TABS -->
-  <div class="tabs-wrap">
-    <button class="tab-btn active" onclick="switchTab('journal',this)">Trade Journal</button>
-    <button class="tab-btn" onclick="switchTab('overview',this)">Overview</button>
-    <button class="tab-btn" onclick="switchTab('annual',this)">Annual P&amp;L</button>
-    <button class="tab-btn" onclick="switchTab('significance',this)">Significance</button>
-    <button class="tab-btn" onclick="switchTab('leverage',this)">Leverage</button>
-    <button class="tab-btn" onclick="switchTab('spec',this)">Specification</button>
-    <button class="tab-btn" onclick="switchTab('regime',this)">Regime</button>
-  </div>
+  <div class="tabs-wrap" id="tabs-wrap"></div>
 </div>
 
-<!-- TAB: JOURNAL (first) -->
-<div class="tab-pane active" id="tab-journal">
-  <div class="j-controls">
-    <button class="j-btn active" onclick="setFilter('all',this)">All Days</button>
-    <button class="j-btn" onclick="setFilter('trades',this)">Trades Only</button>
-    <button class="j-btn" onclick="setFilter('wins',this)">Wins</button>
-    <button class="j-btn" onclick="setFilter('losses',this)">Losses</button>
-    <button class="j-btn" onclick="setFilter('live',this)">Live</button>
-    <span class="j-count" id="j-count"></span>
-    <input class="j-search" type="text" placeholder="Search date..." oninput="setSearch(this.value)" />
-  </div>
-  <div class="j-wrap">
-    <table class="j-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Source</th>
-          <th>Reference High</th>
-          <th>Entry</th>
-          <th>Stop</th>
-          <th>Target</th>
-          <th>Risk ($)</th>
-          <th>Vol Ratio</th>
-          <th>Result</th>
-          <th>P&L (R)</th>
-        </tr>
-      </thead>
-      <tbody id="j-tbody">
-        <tr><td colspan="10" style="text-align:center;padding:40px;color:#aeaeb2;" id="j-loading">Loading...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- TAB: OVERVIEW -->
-<div class="tab-pane" id="tab-overview">
-  <div class="metric-grid">
-    <div class="metric-card">
-      <div class="mc-label">Annualized Return</div>
-      <div class="mc-val blue">21.3%</div>
-      <div class="mc-sub">2× leverage · 2019–2025</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Sharpe Ratio (ann.)</div>
-      <div class="mc-val blue">2.05</div>
-      <div class="mc-sub">After all execution costs</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Maximum Drawdown</div>
-      <div class="mc-val amber">−20.7%</div>
-      <div class="mc-sub">2020 COVID crash</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Calmar Ratio</div>
-      <div class="mc-val blue">1.03</div>
-      <div class="mc-sub">Ann. return ÷ Max DD</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Win Rate</div>
-      <div class="mc-val green">43.3%</div>
-      <div class="mc-sub">Breakeven threshold: 33.3%</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Positive Years</div>
-      <div class="mc-val green">6 / 7</div>
-      <div class="mc-sub">OOS 2019–2025</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Total OOS Signals</div>
-      <div class="mc-val">289</div>
-      <div class="mc-sub">~41 per year</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-label">Mean R per Signal</div>
-      <div class="mc-val blue">+0.150R</div>
-      <div class="mc-sub">Net of slippage &amp; commission</div>
-    </div>
-  </div>
-  <div class="callout">
-    The signal demonstrates positive expected value at the 1% significance level across five independent statistical tests on 289 out-of-sample observations spanning seven complete calendar years. This includes a global pandemic, a 475bps rate hiking cycle, and two distinct bull markets. Annualized Sharpe of 2.05 after realistic execution costs. Capital efficiency scales linearly — Sharpe remains near-constant from 1× to 3× leverage.
-  </div>
-</div>
-
-<!-- TAB: ANNUAL -->
-<div class="tab-pane" id="tab-annual">
-  <div class="s-title">Annual P&L · Out-of-Sample 2019–2025</div>
-  <div class="year-row" id="year-cards"></div>
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Year</th>
-        <th>Net P&L ($100k base)</th>
-        <th>Signals</th>
-        <th>Win Rate</th>
-        <th>Mean R</th>
-        <th>Market Regime</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>2019</td><td class="td-green">+$14,539</td><td>46</td><td>43%</td><td class="td-green">+0.132</td><td class="td-muted">Pre-COVID bull</td></tr>
-      <tr><td>2020</td><td class="td-red">−$5,659</td><td>39</td><td>36%</td><td class="td-red">−0.080</td><td class="td-muted">COVID crash</td></tr>
-      <tr><td>2021</td><td class="td-green">+$29,744</td><td>48</td><td>42%</td><td class="td-green">+0.170</td><td class="td-muted">QE bull run</td></tr>
-      <tr><td>2022</td><td class="td-green">+$10,573</td><td>34</td><td>35%</td><td class="td-green">+0.173</td><td class="td-muted">Rate-shock bear</td></tr>
-      <tr><td>2023</td><td class="td-green">+$16,989</td><td>44</td><td>34%</td><td class="td-green">+0.135</td><td class="td-muted">AI-driven momentum</td></tr>
-      <tr><td>2024</td><td class="td-green">+$36,242</td><td>29</td><td>48%</td><td class="td-green">+0.349</td><td class="td-muted">Bull / election cycle</td></tr>
-      <tr><td>2025</td><td class="td-green">+$46,581</td><td>49</td><td>45%</td><td class="td-green">+0.265</td><td class="td-muted">Tariff volatility</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- TAB: SIGNIFICANCE -->
-<div class="tab-pane" id="tab-significance">
-  <div class="s-title">Statistical Significance</div>
-  <div class="sig-wrap">
-    <div class="sig-block">
-      <div class="sig-head">Hypothesis Tests · H₀: E[R] = 0</div>
-      <div class="sig-row">
-        <span class="sig-test">One-sample t-test</span>
-        <span class="sig-res"><span class="sig-pval">t = 3.065 · p = 0.0024</span><span class="pass">✓ 1%</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">Sharpe t-statistic (Lo 2002)</span>
-        <span class="sig-res"><span class="sig-pval">t = 3.071 · p = 0.0021</span><span class="pass">✓ 1%</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">Bootstrap 95% CI (n=10,000)</span>
-        <span class="sig-res"><span class="sig-pval">[0.048, 0.216] · excl. 0</span><span class="pass">✓ Pass</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">Binomial win rate test</span>
-        <span class="sig-res"><span class="sig-pval">41.2% vs 33.3% · p = 0.0030</span><span class="pass">✓ 1%</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">Year-consistency binomial</span>
-        <span class="sig-res"><span class="sig-pval">8/8 pos. years · p = 0.0039</span><span class="pass">✓ 1%</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">Bonferroni correction (30 tests)</span>
-        <span class="sig-res"><span class="sig-pval">α* = 0.0017 · p = 0.0024</span><span class="warn">⚠ Borderline</span></span>
-      </div>
-    </div>
-    <div class="sig-block">
-      <div class="sig-head">Regime Stress Tests · OOS 2019–2025</div>
-      <div class="sig-row">
-        <span class="sig-test">2020 COVID crash (VIX peak 85)</span>
-        <span class="sig-res"><span class="sig-pval">−$5,659</span><span class="fail-r">✗ Negative</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">2021 QE bull grind</span>
-        <span class="sig-res"><span class="sig-pval">+$29,744</span><span class="pass">✓ Positive</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">2022 Rate-shock bear (−18% SPY)</span>
-        <span class="sig-res"><span class="sig-pval">+$10,573</span><span class="pass">✓ Positive</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">2023 Low-vol / AI rotation</span>
-        <span class="sig-res"><span class="sig-pval">+$16,989</span><span class="pass">✓ Positive</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">2024 AI-driven bull market</span>
-        <span class="sig-res"><span class="sig-pval">+$36,242</span><span class="pass">✓ Positive</span></span>
-      </div>
-      <div class="sig-row">
-        <span class="sig-test">2025 Tariff volatility regime</span>
-        <span class="sig-res"><span class="sig-pval">+$46,581</span><span class="pass">✓ Positive</span></span>
-      </div>
-    </div>
-  </div>
-  <div class="callout">
-    Signal is statistically significant at the 1% level across all parametric and non-parametric tests. Bonferroni adjustment borderline - mitigated by strong economic prior and walk-forward validation discipline. Profitable in 5/6 distinct macroeconomic regimes. Sole failure attributable to historically unprecedented intraday volatility (VIX peak 85.47, March 2020).
-  </div>
-</div>
-
-<!-- TAB: LEVERAGE -->
-<div class="tab-pane" id="tab-leverage">
-  <div class="s-title">Leverage Sensitivity</div>
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Leverage</th>
-        <th>Final Equity</th>
-        <th>Total Return</th>
-        <th>Ann. Return</th>
-        <th>Sharpe</th>
-        <th>Max DD</th>
-        <th>Calmar</th>
-        <th>Worst Year ($)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="td-muted">1×</td>
-        <td>$151,438</td><td>51.4%</td><td>7.3%</td><td>2.21</td>
-        <td class="td-green">−5.9%</td><td>1.24</td><td class="td-muted">−2,800</td>
-      </tr>
-      <tr class="sel">
-        <td class="td-blue"><strong>2×</strong><span class="sel-badge">LIVE</span></td>
-        <td class="td-blue"><strong>$249,009</strong></td>
-        <td class="td-blue"><strong>149.0%</strong></td>
-        <td class="td-blue"><strong>21.3%</strong></td>
-        <td class="td-blue"><strong>2.05</strong></td>
-        <td style="color:#9a5e00;font-weight:500">−20.7%</td>
-        <td class="td-blue"><strong>1.03</strong></td>
-        <td>−5,659</td>
-      </tr>
-      <tr>
-        <td>3×</td>
-        <td>$364,352</td><td>264.4%</td><td>37.8%</td><td>2.02</td>
-        <td class="td-red">−29.9%</td><td>1.26</td><td>−10,265</td>
-      </tr>
-      <tr>
-        <td class="td-muted">4×</td>
-        <td class="td-muted">$305,752</td>
-        <td class="td-muted">205.8%</td>
-        <td class="td-muted">29.4%</td>
-        <td class="td-muted">1.99</td>
-        <td class="td-red">−38.5%</td>
-        <td class="td-muted">0.76</td>
-        <td class="td-muted">−18,200</td>
-      </tr>
-    </tbody>
-  </table>
-  <p style="font-size:12px;color:#6e6e73;line-height:1.7;margin-top:12px;">
-    Sharpe remains near-constant across leverage levels (2.21 → 1.99), confirming linear scaling. 2× selected as live baseline. All figures: $100k starting capital, 2019–2025 OOS, volumetric position sizing, $0.02/share slippage + $2 commission per trade.
-  </p>
-</div>
-
-<!-- TAB: SPEC -->
-<div class="tab-pane" id="tab-spec">
-  <div class="s-title">Strategy Specification</div>
-  <div class="spec-grid">
-    <div class="spec-block">
-      <div class="spec-head">Signal Construction</div>
-      <div class="spec-row"><span class="sk">Instrument</span><span class="sv">US Large-Cap Equity ETF</span></div>
-      <div class="spec-row"><span class="sk">Direction</span><span class="sv">Long only</span></div>
-      <div class="spec-row"><span class="sk">Consolidation window</span><span class="sv">NA</span></div>
-      <div class="spec-row"><span class="sk">Signal bar</span><span class="sv">NA</span></div>
-      <div class="spec-row"><span class="sk">Entry condition</span><span class="sv">NA</span></div>
-      <div class="spec-row"><span class="sk">Stop loss</span><span class="sv">0.5× risk distance</span></div>
-      <div class="spec-row"><span class="sk">Take profit</span><span class="sv">1.0× risk distance</span></div>
-      <div class="spec-row"><span class="sk">Max signals per day</span><span class="sv">1</span></div>
-    </div>
-    <div class="spec-block">
-      <div class="spec-head">Position Sizing</div>
-      <div class="spec-row"><span class="sk">Base risk</span><span class="sv">1% of equity per signal</span></div>
-      <div class="spec-row"><span class="sk">Leverage</span><span class="sv blue">2× intraday</span></div>
-      <div class="spec-row"><span class="sk">Low participation</span><span class="sv">0.5× sizing</span></div>
-      <div class="spec-row"><span class="sk">Normal participation</span><span class="sv">1.0× sizing</span></div>
-      <div class="spec-row"><span class="sk">High participation</span><span class="sv blue">2.0× sizing</span></div>
-      <div class="spec-row"><span class="sk">Participation threshold</span><span class="sv">20-day rolling volume MA</span></div>
-      <div class="spec-row"><span class="sk">Compounding</span><span class="sv">Full — % of current equity</span></div>
-      <div class="spec-row"><span class="sk">Assumed slippage</span><span class="sv">$0.02 / share</span></div>
-    </div>
-    <div class="spec-block">
-      <div class="spec-head">Validation Methodology</div>
-      <div class="spec-row"><span class="sk">Data source</span><span class="sv">NYSE TAQ millisecond trades</span></div>
-      <div class="spec-row"><span class="sk">Data vendor</span><span class="sv">Reliable source</span></div>
-      <div class="spec-row"><span class="sk">Bar construction</span><span class="sv">Resampled from tick data</span></div>
-      <div class="spec-row"><span class="sk">Training period</span><span class="sv">2007–2018</span></div>
-      <div class="spec-row"><span class="sk">OOS test period</span><span class="sv blue">2019–2025 (untouched)</span></div>
-      <div class="spec-row"><span class="sk">Walk-forward</span><span class="sv">Single split, no lookahead</span></div>
-      <div class="spec-row"><span class="sk">Parameter search</span><span class="sv">30-combination grid</span></div>
-      <div class="spec-row"><span class="sk">Exchange filter</span><span class="sv">Primary exchange only</span></div>
-    </div>
-    <div class="spec-block">
-      <div class="spec-head">Live Execution</div>
-      <div class="spec-row"><span class="sk">Broker</span><span class="sv">Alpaca (paper trading)</span></div>
-      <div class="spec-row"><span class="sk">Order type</span><span class="sv">Bracket (market + SL + TP)</span></div>
-      <div class="spec-row"><span class="sk">Automation</span><span class="sv blue">Scheduled · daily</span></div>
-      <div class="spec-row"><span class="sk">Data feed</span><span class="sv">Real-time market data</span></div>
-      <div class="spec-row"><span class="sk">Regime check</span><span class="sv">6-signal daily monitor</span></div>
-      <div class="spec-row"><span class="sk">Journal update</span><span class="sv">Auto-push after close</span></div>
-      <div class="spec-row"><span class="sk">Status</span><span class="sv blue"> live validation</span></div>
-      <div class="spec-row"><span class="sk">Live target</span><span class="sv">After 6-month validation</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- TAB: REGIME -->
-<div class="tab-pane" id="tab-regime">
-  <div class="s-title">Regime Monitor</div>
-  <div class="regime-grid">
-    <div class="rc">
-      <div class="rc-label">200-Day SMA</div>
-      <div class="rc-val pass">Above</div>
-      <div class="rc-sub">Price +2.9% above long-term trend</div>
-    </div>
-    <div class="rc">
-      <div class="rc-label">Implied Volatility (VIX)</div>
-      <div class="rc-val pass">19.4</div>
-      <div class="rc-sub">Below 30 threshold · Normal regime</div>
-    </div>
-    <div class="rc">
-      <div class="rc-label">ATR% vs 100-Day MA</div>
-      <div class="rc-val pass">1.64%</div>
-      <div class="rc-sub">Above MA (1.21%) · Momentum healthy</div>
-    </div>
-    <div class="rc">
-      <div class="rc-label">Realized Vol (20-Day)</div>
-      <div class="rc-val pass">20.4%</div>
-      <div class="rc-sub">79th percentile · Elevated but healthy</div>
-    </div>
-    <div class="rc">
-      <div class="rc-label">Regime Score</div>
-      <div class="rc-val pass">6 / 6</div>
-      <div class="rc-sub">All conditions favorable</div>
-    </div>
-    <div class="rc">
-      <div class="rc-label">Signal Action</div>
-      <div class="rc-val pass">Active</div>
-      <div class="rc-sub">Full position sizing · <span id="regime-date"></span></div>
-    </div>
-  </div>
-  <div class="callout">
-    Six daily conditions evaluated: price vs 200-day SMA, ATR% relative to 100-day moving average, VIX vs 30 threshold, VIX spike/crush pattern, 20-day realized volatility vs 10th and 90th historical percentiles. Score ≥ 4/6 → full sizing. Score 3/6 → half sizing. Score &lt; 3/6 → no trade.
-  </div>
-</div>
+<div id="tab-content-container"></div>
 
 <footer>
-  <span>ΔMOM · Systematic Signal Research</span>
+  <span>DMOM · Systematic Signal Research</span>
   <span id="footer-date"></span>
 </footer>
 
 <script>
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
+const D = {
+  spy: {
+    kpis: [{label:'OOS Sharpe',val:'2.05',cls:'blue'},{label:'Ann. Return',val:'21.3%',cls:'blue'},{label:'p-value',val:'0.0024',cls:'green'},{label:'Max DD',val:'-20.7%',cls:'amber'}],
+    title: 'Stochastic First-Passage<br>Momentum Signal',
+    sub: 'A systematic long-equity signal based on order-flow regime detection and volumetric participation conditioning at the first consolidation interval. Validated on NYSE TAQ millisecond tick data. OOS period: 2019 to 2025.',
+    tabs: [{id:'journal',l:'Trade Journal'},{id:'overview',l:'Overview'},{id:'annual',l:'Annual P&L'},{id:'significance',l:'Significance'},{id:'leverage',l:'Leverage'},{id:'spec',l:'Specification'},{id:'regime',l:'Regime'}],
+    overview: {
+      metrics: [{label:'Annualized Return',val:'21.3%',cls:'blue',sub:'2x leverage · 2019 to 2025'},{label:'Sharpe Ratio (ann.)',val:'2.05',cls:'blue',sub:'After all execution costs'},{label:'Maximum Drawdown',val:'-20.7%',cls:'amber',sub:'2020 COVID crash'},{label:'Calmar Ratio',val:'1.03',cls:'blue',sub:'Ann. return divided by Max DD'},{label:'Win Rate',val:'43.3%',cls:'green',sub:'Breakeven threshold: 33.3%'},{label:'Positive Years',val:'6 / 7',cls:'green',sub:'OOS 2019 to 2025'},{label:'Total OOS Signals',val:'289',cls:'',sub:'~41 per year'},{label:'Mean R per Signal',val:'+0.150R',cls:'blue',sub:'Net of slippage and commission'}],
+      callout:'Signal is statistically significant at the 1% level across five independent tests on 289 out-of-sample observations spanning seven complete calendar years, including a global pandemic, a 475bps rate hiking cycle, and two distinct bull markets. Annualized Sharpe of 2.05 after realistic execution costs.'
+    },
+    annual:[{year:2019,pnl:14539,trades:46,wr:43,meanr:'+0.132',regime:'Pre-COVID bull'},{year:2020,pnl:-5659,trades:39,wr:36,meanr:'-0.080',regime:'COVID crash'},{year:2021,pnl:29744,trades:48,wr:42,meanr:'+0.170',regime:'QE bull run'},{year:2022,pnl:10573,trades:34,wr:35,meanr:'+0.173',regime:'Rate-shock bear'},{year:2023,pnl:16989,trades:44,wr:34,meanr:'+0.135',regime:'AI-driven momentum'},{year:2024,pnl:36242,trades:29,wr:48,meanr:'+0.349',regime:'Bull / election cycle'},{year:2025,pnl:46581,trades:49,wr:45,meanr:'+0.265',regime:'Tariff volatility'}],
+    sig:{
+      tests:[{t:'One-sample t-test',d:'t = 3.065 · p = 0.0024',v:'pass',l:'1%'},{t:'Sharpe t-statistic (Lo 2002)',d:'t = 3.071 · p = 0.0021',v:'pass',l:'1%'},{t:'Bootstrap 95% CI (n=10,000)',d:'[0.048, 0.216] · excl. 0',v:'pass',l:'Pass'},{t:'Binomial win rate test',d:'41.2% vs 33.3% · p = 0.0030',v:'pass',l:'1%'},{t:'Year-consistency binomial',d:'8/8 pos. years · p = 0.0039',v:'pass',l:'1%'},{t:'Bonferroni correction (30 tests)',d:'a* = 0.0017 · p = 0.0024',v:'warn',l:'Borderline'}],
+      stress:[{p:'2020 COVID crash (VIX peak 85)',n:'-$5,659',v:'fail',l:'Negative'},{p:'2021 QE bull grind',n:'+$29,744',v:'pass',l:'Positive'},{p:'2022 Rate-shock bear (-18% SPY)',n:'+$10,573',v:'pass',l:'Positive'},{p:'2023 Low-vol / AI rotation',n:'+$16,989',v:'pass',l:'Positive'},{p:'2024 AI-driven bull market',n:'+$36,242',v:'pass',l:'Positive'},{p:'2025 Tariff volatility regime',n:'+$46,581',v:'pass',l:'Positive'}],
+      callout:'Signal is statistically significant at the 1% level across all parametric and non-parametric tests. Bonferroni adjustment is borderline, mitigated by strong economic prior and walk-forward validation discipline. Profitable in 5 of 6 distinct macroeconomic regimes. Sole failure attributable to historically unprecedented intraday volatility (VIX peak 85, March 2020).'
+    },
+    lev:{rows:[{lev:'1x',final:'$151,438',total:'51.4%',ann:'7.3%',sh:'2.21',dd:'-5.9%',ddred:false,cal:'1.24',worst:'-$2,800',sel:false},{lev:'2x',final:'$249,009',total:'149.0%',ann:'21.3%',sh:'2.05',dd:'-20.7%',ddred:true,cal:'1.03',worst:'-$5,659',sel:true},{lev:'3x',final:'$364,352',total:'264.4%',ann:'37.8%',sh:'2.02',dd:'-29.9%',ddred:true,cal:'1.26',worst:'-$10,265',sel:false},{lev:'4x',final:'$305,752',total:'205.8%',ann:'29.4%',sh:'1.99',dd:'-38.5%',ddred:true,cal:'0.76',worst:'-$18,200',sel:false}],note:'Sharpe remains near-constant across leverage levels (2.21 to 1.99), confirming linear scaling. 2x selected as live baseline. All figures: $100k starting capital, 2019 to 2025 OOS, volumetric position sizing, $0.02/share slippage plus $2 commission per trade.'},
+    spec:{
+      signal:[{k:'Instrument',v:'US Large-Cap Equity ETF'},{k:'Direction',v:'Long only'},{k:'Stop loss',v:'0.5x risk distance'},{k:'Take profit',v:'1.0x risk distance'},{k:'Max signals per day',v:'1'}],
+      sizing:[{k:'Base risk',v:'1% of equity per signal'},{k:'Leverage',v:'2x intraday',blue:true},{k:'Low participation',v:'0.5x sizing'},{k:'Normal participation',v:'1.0x sizing'},{k:'High participation',v:'2.0x sizing',blue:true},{k:'Compounding',v:'Full — % of current equity'},{k:'Assumed slippage',v:'$0.02 per share'}],
+      validation:[{k:'Data source',v:'NYSE TAQ millisecond trades'},{k:'Bar construction',v:'Resampled from tick data'},{k:'Training period',v:'2007 to 2018'},{k:'OOS test period',v:'2019 to 2025 (untouched)',blue:true},{k:'Walk-forward',v:'Single split, no lookahead'},{k:'Parameter search',v:'30-combination grid'}],
+      execution:[{k:'Broker',v:'Alpaca (paper trading)'},{k:'Order type',v:'Bracket (market + SL + TP)'},{k:'Automation',v:'Scheduled · 9:44 ET daily',blue:true},{k:'Data feed',v:'Real-time market data'},{k:'Status',v:'Paper live validation',blue:true}]
+    },
+    journalUrl:'https://pawarraj8888.github.io/spy-orb-journal/trades.json',
+    journalNote:null,
+    hasRegime:true, hasCapacity:false,
+  },
+  es: {
+    kpis:[{label:'OOS Sharpe',val:'2.53',cls:'blue'},{label:'Ann. Return',val:'25.9%',cls:'blue'},{label:'NW p-value',val:'0.0023',cls:'green'},{label:'Max DD',val:'-11.3%',cls:'amber'}],
+    title:'Stochastic First-Passage<br>Momentum Signal · ES Futures',
+    sub:'Same ORB signal on E-mini S&P 500 Futures. Superior risk-adjusted returns, 7 of 7 OOS years profitable, and institutional capacity to $100M+ with algorithmic execution. Validated on CME tick data with Almgren-Chriss market impact model. OOS period: 2019 to 2025.',
+    tabs:[{id:'journal',l:'Trade Journal'},{id:'overview',l:'Overview'},{id:'annual',l:'Annual P&L'},{id:'significance',l:'Significance'},{id:'leverage',l:'Leverage'},{id:'capacity',l:'Capacity'},{id:'spec',l:'Specification'}],
+    overview:{
+      metrics:[{label:'Annualized Return',val:'25.9%',cls:'blue',sub:'2x leverage · 2019 to 2025'},{label:'Sharpe Ratio (ann.)',val:'2.53',cls:'blue',sub:'After all execution costs'},{label:'Maximum Drawdown',val:'-11.3%',cls:'green',sub:'vs -20.7% on SPY ETF'},{label:'Calmar Ratio',val:'2.29',cls:'blue',sub:'Ann. return divided by Max DD'},{label:'Win Rate',val:'40.1%',cls:'green',sub:'Breakeven threshold: 33.3%'},{label:'Positive Years',val:'7 / 7',cls:'green',sub:'All OOS years profitable'},{label:'Total OOS Trades',val:'284',cls:'',sub:'~41 per year'},{label:'NW HAC t-stat',val:'3.049',cls:'blue',sub:'HAC corrected · p = 0.0023'}],
+      callout:'ES Futures implementation achieves superior risk-adjusted returns vs the SPY ETF version at every leverage level. Max drawdown nearly halves from 20.7% to 11.3%, and the worst year remains positive (+$1,275 in 2020 vs -$5,659 on SPY). Futures provide natural leverage via margin, lower per-unit transaction costs, and institutional-grade capacity extending to $100M+ with algorithmic execution.'
+    },
+    annual:[{year:2019,pnl:21748,trades:42,wr:40,meanr:'+0.143',regime:'Pre-COVID bull'},{year:2020,pnl:1275,trades:39,wr:36,meanr:'+0.027',regime:'COVID crash'},{year:2021,pnl:26589,trades:48,wr:42,meanr:'+0.156',regime:'QE bull run'},{year:2022,pnl:16948,trades:35,wr:37,meanr:'+0.071',regime:'Rate-shock bear'},{year:2023,pnl:30879,trades:42,wr:40,meanr:'+0.107',regime:'AI-driven momentum'},{year:2024,pnl:44901,trades:29,wr:41,meanr:'+0.138',regime:'Bull / election cycle'},{year:2025,pnl:38726,trades:49,wr:43,meanr:'+0.153',regime:'Tariff volatility'}],
+    sig:{
+      tests:[{t:'One-sample t-test',d:'t = 2.697 · p = 0.0074',v:'pass',l:'1%'},{t:'Newey-West HAC t-stat',d:'t = 3.049 · p = 0.0023',v:'pass',l:'1%'},{t:'Bootstrap 95% CI (n=10,000)',d:'[0.034, 0.204] · excl. 0',v:'pass',l:'Pass'},{t:'Binomial win rate test',d:'40.1% vs 33.3% · p = 0.0096',v:'pass',l:'1%'},{t:'CPCV OOS Sharpe (15 combos)',d:'100% positive · PBO = 0.00',v:'pass',l:'Pass'},{t:'Walk-forward 7/7 years',d:'All OOS years profitable',v:'pass',l:'Pass'}],
+      stress:[{p:'2020 COVID crash (4 trades)',n:'+$1,275 net',v:'warn',l:'Barely positive'},{p:'2021 QE bull grind',n:'+$26,589',v:'pass',l:'Positive'},{p:'2022 Rate-shock bear (-18% SPY)',n:'+$16,948',v:'pass',l:'Positive'},{p:'2023 Low-vol / AI rotation',n:'+$30,879',v:'pass',l:'Positive'},{p:'2024 AI-driven bull market',n:'+$44,901',v:'pass',l:'Positive'},{p:'2025 Tariff volatility regime',n:'+$38,726',v:'pass',l:'Positive'}],
+      callout:'Newey-West HAC t-statistic of 3.049 (p = 0.0023) is stronger than the naive OLS estimate because trade returns show slight negative autocorrelation — losses tend to be followed by wins, so drawdowns do not compound. CPCV with 6 splits and 21-day embargo shows 100% positive OOS Sharpe and probability of backtest overfitting of zero across all 15 combinations.'
+    },
+    lev:{rows:[{lev:'1x',final:'$186,533',total:'86.5%',ann:'12.4%',sh:'2.67',dd:'-4.9%',ddred:false,cal:'2.53',worst:'+$638',sel:false},{lev:'2x',final:'$281,065',total:'181.1%',ann:'25.9%',sh:'2.53',dd:'-11.3%',ddred:false,cal:'2.29',worst:'+$1,275',sel:true},{lev:'3x',final:'$469,541',total:'369.5%',ann:'52.8%',sh:'2.38',dd:'-16.9%',ddred:true,cal:'3.13',worst:'+$456',sel:false}],note:'ES Futures deliver superior Sharpe at every leverage level vs SPY, with roughly half the drawdown. At 3x the worst year remains positive ($456). All figures: $100k starting capital, 2019 to 2025 OOS, Almgren-Chriss market impact model, $5 round-trip commission per contract.'},
+    capacity:{rows:[{a:'$100,000',c:5,p:'0.02%',i:'$0.02',v:'Zero impact',cls:'cap-ok'},{a:'$500,000',c:29,p:'0.12%',i:'$0.04',v:'Zero impact',cls:'cap-ok'},{a:'$1,000,000',c:58,p:'0.23%',i:'$0.06',v:'Zero impact',cls:'cap-ok'},{a:'$5,000,000',c:293,p:'1.18%',i:'$0.14',v:'Minimal impact',cls:'cap-ok'},{a:'$10,000,000',c:587,p:'2.36%',i:'$0.19',v:'Minimal impact',cls:'cap-ok'},{a:'$50,000,000',c:2935,p:'11.79%',i:'$0.43',v:'Monitor closely',cls:'cap-warn'},{a:'$100,000,000',c:5871,p:'23.58%',i:'$0.61',v:'Algo execution needed',cls:'cap-warn'}],note:'Median 9:45 bar volume: ~24,894 contracts. Typical stop distance: 13.6 pts = $681 per contract. SPY ETF version caps at roughly $500k. ES extends viable capacity by 200x on the same underlying signal.'},
+    spec:{
+      signal:[{k:'Instrument',v:'E-mini S&P 500 Futures (ES)'},{k:'Direction',v:'Long only'},{k:'Opening range',v:'9:30 to 9:45 ET (3 x 5-min bars)'},{k:'Signal bar',v:'9:45 close above OR high'},{k:'Stop loss',v:'0.5x risk distance'},{k:'Take profit',v:'1.0x risk distance'},{k:'Max signals per day',v:'1'}],
+      sizing:[{k:'Base risk',v:'1% of equity per signal'},{k:'Leverage',v:'2x intraday (via margin)',blue:true},{k:'Low participation',v:'0.5x sizing (vol below MA20)'},{k:'Normal participation',v:'1.0x sizing (vol 1 to 2x MA20)'},{k:'High participation',v:'2.0x sizing (vol above 2x MA20)',blue:true},{k:'Bar volume cap',v:'Max 20% of 9:45 bar volume'},{k:'Commission',v:'$5 round-trip per contract'}],
+      validation:[{k:'Data source',v:'CME tick data via WRDS'},{k:'Bar construction',v:'Resampled 1-min to 5-min OHLCV'},{k:'Training period',v:'2016 to 2018 (negative control)'},{k:'OOS test period',v:'2019 to 2025 (untouched)',blue:true},{k:'CPCV',v:'6 splits, 21-day embargo, PBO = 0.00'},{k:'Newey-West lags',v:'5 lags (Andrews 1991 rule)'}],
+      execution:[{k:'Order type',v:'Bracket (market + SL + TP)'},{k:'Slippage model',v:'10% of bid-ask spread'},{k:'Bar vol cap',v:'20% max participation per trade'},{k:'Status',v:'Backtest validated',blue:true},{k:'Next step',v:'Live paper trading on futures'},{k:'Capacity ceiling',v:'$100M+ with algo execution'}]
+    },
+    journalUrl:'https://pawarraj8888.github.io/spy-orb-journal/es_trades.json',
+    journalNote:'Backtest trades generated from CME tick data. Run generate_es_trades.py then push es_trades.json to GitHub to populate this journal.',
+    hasRegime:false, hasCapacity:true,
+  }
+};
+
+let inst='spy', trades=[], filt='all', srch='';
+
+function switchInstrument(id,btn){
+  inst=id; trades=[]; filt='all'; srch='';
+  document.querySelectorAll('.inst-card').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  buildHero(); buildTabs(); activateFirst();
 }
 
-// Year cards
-const yearData = [
-  {year:2019,pnl:14539,trades:46,wr:43},
-  {year:2020,pnl:-5659,trades:39,wr:36},
-  {year:2021,pnl:29744,trades:48,wr:42},
-  {year:2022,pnl:10573,trades:34,wr:35},
-  {year:2023,pnl:16989,trades:44,wr:34},
-  {year:2024,pnl:36242,trades:29,wr:48},
-  {year:2025,pnl:46581,trades:49,wr:45},
-];
-const maxP = Math.max(...yearData.map(d=>Math.abs(d.pnl)));
-document.getElementById('year-cards').innerHTML = yearData.map(d=>{
-  const pos=d.pnl>=0, w=Math.abs(d.pnl)/maxP*100;
-  const s=(pos?'+':'−')+'$'+Math.abs(d.pnl).toLocaleString();
-  return `<div class="yc ${pos?'pos':'neg'}">
-    <div class="yc-yr">${d.year}</div>
-    <div class="yc-pnl">${s}</div>
-    <div class="yc-bar"><div class="yc-bar-fill" style="width:${w}%"></div></div>
-    <div class="yc-rows">
-      <div class="yc-row"><span class="yk">Trades</span><span class="yv">${d.trades}</span></div>
-      <div class="yc-row"><span class="yk">Win %</span><span class="yv">${d.wr}%</span></div>
-    </div>
-  </div>`;
-}).join('');
+function buildHero(){
+  const d=D[inst];
+  document.getElementById('hero-title').innerHTML=d.title;
+  document.getElementById('hero-sub').textContent=d.sub;
+  document.getElementById('hero-kpis').innerHTML=d.kpis.map(k=>`<div class="kpi"><span class="kpi-label">${k.label}</span><span class="kpi-val ${k.cls}">${k.val}</span></div>`).join('');
+}
 
-// Journal
-let allTrades=[], currentFilter='all', currentSearch='';
+function buildTabs(){
+  document.getElementById('tabs-wrap').innerHTML=D[inst].tabs.map(t=>`<button class="tab-btn" onclick="switchTab('${t.id}',this)">${t.l}</button>`).join('');
+}
+
+function activateFirst(){
+  const btn=document.querySelector('.tab-btn');
+  if(btn){btn.classList.add('active'); renderTab(D[inst].tabs[0].id);}
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderTab(id);
+}
+
+function wrap(html){return `<div class="tab-pane active" style="display:block;padding:36px 48px">${html}</div>`;}
+
+function renderTab(id){
+  const c=document.getElementById('tab-content-container');
+  const d=D[inst];
+  if(id==='journal')     {c.innerHTML=buildJournal();loadTrades();return;}
+  if(id==='overview')    {c.innerHTML=buildOverview(d);return;}
+  if(id==='annual')      {c.innerHTML=buildAnnual(d);return;}
+  if(id==='significance'){c.innerHTML=buildSig(d);return;}
+  if(id==='leverage')    {c.innerHTML=buildLev(d);return;}
+  if(id==='capacity')    {c.innerHTML=buildCap(d);return;}
+  if(id==='spec')        {c.innerHTML=buildSpec(d);return;}
+  if(id==='regime')      {c.innerHTML=buildRegime();return;}
+}
+
+function buildOverview(d){
+  const cards=d.overview.metrics.map(m=>`<div class="metric-card"><div class="mc-label">${m.label}</div><div class="mc-val ${m.cls}">${m.val}</div><div class="mc-sub">${m.sub}</div></div>`).join('');
+  let cmp='';
+  if(inst==='es') cmp=`<div class="s-title" style="margin-top:28px">ES Futures vs SPY ETF</div><div class="compare-wrap"><table class="compare-table"><thead><tr><th>Metric</th><th class="es-col">ES Futures</th><th class="spy-col">SPY ETF</th></tr></thead><tbody>
+    <tr><td class="metric-name">Ann. Return (2x)</td><td class="es-val better">26.7%</td><td class="spy-val">21.3%</td></tr>
+    <tr><td class="metric-name">Sharpe</td><td class="es-val better">2.53</td><td class="spy-val">2.05</td></tr>
+    <tr><td class="metric-name">Max Drawdown</td><td class="es-val better">-11.3%</td><td class="spy-val">-20.7%</td></tr>
+    <tr><td class="metric-name">Calmar Ratio</td><td class="es-val better">2.29</td><td class="spy-val">1.03</td></tr>
+    <tr><td class="metric-name">Positive Years</td><td class="es-val better">7 / 7</td><td class="spy-val">6 / 7</td></tr>
+    <tr><td class="metric-name">Worst Year</td><td class="es-val better">+$1,275</td><td class="spy-val">-$5,659</td></tr>
+    <tr><td class="metric-name">Capacity at $10M</td><td class="es-val better">Minimal impact</td><td class="spy-val">Too large</td></tr>
+    <tr><td class="metric-name">Capacity at $100M</td><td class="es-val better">Algo execution</td><td class="spy-val">Impossible</td></tr>
+  </tbody></table></div>`;
+  return wrap(`<div class="metric-grid">${cards}</div><div class="callout">${d.overview.callout}</div>${cmp}`);
+}
+
+function buildAnnual(d){
+  const mx=Math.max(...d.annual.map(x=>Math.abs(x.pnl)));
+  const cards=d.annual.map(x=>{
+    const pos=x.pnl>=0;
+    return `<div class="yc ${pos?'pos':'neg'}"><div class="yc-yr">${x.year}</div><div class="yc-pnl">${(pos?'+':'')}$${Math.abs(x.pnl).toLocaleString()}</div><div class="yc-bar"><div class="yc-bar-fill" style="width:${Math.abs(x.pnl)/mx*100}%"></div></div><div class="yc-rows"><div class="yc-row"><span class="yk">Trades</span><span class="yv">${x.trades}</span></div><div class="yc-row"><span class="yk">Win %</span><span class="yv">${x.wr}%</span></div></div></div>`;
+  }).join('');
+  const rows=d.annual.map(x=>{const pos=x.pnl>=0;return `<tr><td>${x.year}</td><td class="${pos?'td-green':'td-red'}">${(pos?'+':'')}$${Math.abs(x.pnl).toLocaleString()}</td><td>${x.trades}</td><td>${x.wr}%</td><td class="${parseFloat(x.meanr)>=0?'td-green':'td-red'}">${x.meanr}</td><td class="td-muted">${x.regime}</td></tr>`;}).join('');
+  return wrap(`<div class="s-title">Annual P&L · Out-of-Sample 2019 to 2025</div><div class="year-row">${cards}</div><table class="data-table"><thead><tr><th>Year</th><th>Net P&L ($100k base)</th><th>Signals</th><th>Win Rate</th><th>Mean R</th><th>Market Regime</th></tr></thead><tbody>${rows}</tbody></table>`);
+}
+
+function buildSig(d){
+  const tests=d.sig.tests.map(t=>`<div class="sig-row"><span>${t.t}</span><span class="sig-res"><span class="sig-pval">${t.d}</span><span class="${t.v==='pass'?'pass':t.v==='warn'?'warn':'fail-r'}">${t.l}</span></span></div>`).join('');
+  const stress=d.sig.stress.map(s=>`<div class="sig-row"><span>${s.p}</span><span class="sig-res"><span class="sig-pval">${s.n}</span><span class="${s.v==='pass'?'pass':s.v==='warn'?'warn':'fail-r'}">${s.l}</span></span></div>`).join('');
+  return wrap(`<div class="s-title">Statistical Significance</div><div class="sig-wrap"><div class="sig-block"><div class="sig-head">Hypothesis Tests · H0: E[R] = 0</div>${tests}</div><div class="sig-block"><div class="sig-head">Regime Stress Tests · OOS 2019 to 2025</div>${stress}</div></div><div class="callout">${d.sig.callout}</div>`);
+}
+
+function buildLev(d){
+  const rows=d.lev.rows.map(r=>{
+    const s=r.sel;
+    const ddStyle=r.ddred?'color:#c0392b;font-weight:500':'color:#1d8348;font-weight:500';
+    return `<tr class="${s?'sel':''}"><td class="${s?'td-blue':'td-muted'}">${s?'<strong>'+r.lev+'</strong>':r.lev}${s?'<span class="sel-badge">LIVE</span>':''}</td><td class="${s?'td-blue':'td-muted'}">${s?'<strong>'+r.final+'</strong>':r.final}</td><td class="${s?'td-blue':'td-muted'}">${r.total}</td><td class="${s?'td-blue':'td-muted'}">${r.ann}</td><td class="${s?'td-blue':'td-muted'}">${r.sh}</td><td style="${ddStyle}">${r.dd}</td><td class="${s?'td-blue':'td-muted'}">${r.cal}</td><td>${r.worst}</td></tr>`;
+  }).join('');
+  return wrap(`<div class="s-title">Leverage Sensitivity</div><table class="data-table"><thead><tr><th>Leverage</th><th>Final Equity</th><th>Total Return</th><th>Ann. Return</th><th>Sharpe</th><th>Max DD</th><th>Calmar</th><th>Worst Year</th></tr></thead><tbody>${rows}</tbody></table><p style="font-size:12px;color:#6e6e73;line-height:1.7;margin-top:12px">${d.lev.note}</p>`);
+}
+
+function buildCap(d){
+  const rows=d.capacity.rows.map(r=>`<tr><td style="font-weight:500">${r.a}</td><td>${r.c.toLocaleString()}</td><td>${r.p}</td><td>${r.i}</td><td class="${r.cls}">${r.v}</td></tr>`).join('');
+  return wrap(`<div class="s-title">Market Impact and Capacity Analysis</div><div class="cap-wrap"><table class="cap-table"><thead><tr><th>Account Size</th><th>Contracts Required</th><th>% of Median 9:45 Bar</th><th>Impact per Contract</th><th>Verdict</th></tr></thead><tbody>${rows}</tbody></table></div><p style="font-size:12px;color:#6e6e73;line-height:1.7;margin-top:12px">${d.capacity.note}</p><div class="callout">ES Futures solve the capacity problem that limits the SPY ETF version. At $10M, market impact is minimal at 2.4% of a single 5-minute bar. At $100M, algorithmic execution splits the order over 2 to 3 minutes, keeping impact manageable. This is a 200x capacity improvement from the same underlying signal.</div>`);
+}
+
+function buildSpec(d){
+  const blk=(title,rows)=>`<div class="spec-block"><div class="spec-head">${title}</div>${rows.map(r=>`<div class="spec-row"><span class="sk">${r.k}</span><span class="sv ${r.blue?'blue':''}">${r.v}</span></div>`).join('')}</div>`;
+  return wrap(`<div class="s-title">Strategy Specification</div><div class="spec-grid">${blk('Signal Construction',d.spec.signal)}${blk('Position Sizing',d.spec.sizing)}${blk('Validation Methodology',d.spec.validation)}${blk('Live Execution',d.spec.execution)}</div>`);
+}
+
+function buildRegime(){
+  const ds=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  return wrap(`<div class="s-title">Regime Monitor</div><div class="regime-grid"><div class="rc"><div class="rc-label">200-Day SMA</div><div class="rc-val pass">Above</div><div class="rc-sub">Price +2.9% above long-term trend</div></div><div class="rc"><div class="rc-label">Implied Volatility (VIX)</div><div class="rc-val pass">19.4</div><div class="rc-sub">Below 30 threshold · Normal regime</div></div><div class="rc"><div class="rc-label">ATR% vs 100-Day MA</div><div class="rc-val pass">1.64%</div><div class="rc-sub">Above MA (1.21%) · Momentum healthy</div></div><div class="rc"><div class="rc-label">Realized Vol (20-Day)</div><div class="rc-val pass">20.4%</div><div class="rc-sub">79th percentile · Elevated but healthy</div></div><div class="rc"><div class="rc-label">Regime Score</div><div class="rc-val pass">6 / 6</div><div class="rc-sub">All conditions favorable</div></div><div class="rc"><div class="rc-label">Signal Action</div><div class="rc-val pass">Active</div><div class="rc-sub">Full position sizing · ${ds}</div></div></div><div class="callout">Six daily conditions evaluated: price vs 200-day SMA, ATR% relative to 100-day moving average, VIX vs 30 threshold, VIX spike/crush pattern, 20-day realized volatility vs 10th and 90th historical percentiles. Score 4 of 6 or above means full sizing. Score 3 of 6 means half sizing. Score below 3 of 6 means no trade.</div>`);
+}
+
+function buildJournal(){
+  const d=D[inst];
+  const note=d.journalNote?`<div class="info-banner">${d.journalNote}</div>`:'';
+  const liveBtn=inst==='spy'?'<button class="j-btn" onclick="setFilter(\'live\',this)">Live</button>':'';
+  const cols=inst==='spy'
+    ?['Date','Source','OR High','Entry','Stop','Target','Risk ($)','Vol Ratio','Result','P&L (R)']
+    :['Date','OR High','OR Low','Entry','Stop','Target','Exit','Risk (pts)','Contracts','Vol Ratio','FOMC','Result','P&L (R)','P&L ($)'];
+  const thead=cols.map(c=>`<th>${c}</th>`).join('');
+  return wrap(`${note}<div class="j-controls">
+    <button class="j-btn active" onclick="setFilter('all',this)">All Days</button>
+    <button class="j-btn" onclick="setFilter('trades',this)">Trades Only</button>
+    <button class="j-btn" onclick="setFilter('wins',this)">Wins</button>
+    <button class="j-btn" onclick="setFilter('losses',this)">Losses</button>
+    ${liveBtn}
+    <span class="j-count" id="j-count"></span>
+    <input class="j-search" type="text" placeholder="Search date..." oninput="setSearch(this.value)"/>
+  </div>
+  <div class="j-wrap"><table class="j-table">
+    <thead><tr>${thead}</tr></thead>
+    <tbody id="j-tbody"><tr><td colspan="14" style="text-align:center;padding:40px;color:#aeaeb2" id="j-loading">Loading trades...</td></tr></tbody>
+  </table></div>`);
+}
 
 async function loadTrades(){
+  const d=D[inst];
   try{
-    const res=await fetch('https://pawarraj8888.github.io/spy-orb-journal/trades.json');
-    allTrades=await res.json();
-    allTrades.sort((a,b)=>b.date.localeCompare(a.date));
-    document.getElementById('j-loading').style.display='none';
+    const res=await fetch(d.journalUrl);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    trades=await res.json();
+    trades.sort((a,b)=>b.date.localeCompare(a.date));
+    const el=document.getElementById('j-loading');
+    if(el)el.style.display='none';
     renderJournal();
   }catch(e){
-    document.getElementById('j-loading').textContent='Error loading data: '+e.message;
+    const el=document.getElementById('j-loading');
+    if(el)el.textContent=inst==='es'
+      ?'Run generate_es_trades.py then push es_trades.json to your GitHub repo to see ES trades here.'
+      :'Error loading trades: '+e.message;
   }
 }
 
 function setFilter(f,btn){
-  currentFilter=f;
+  filt=f;
   document.querySelectorAll('.j-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
   renderJournal();
 }
 
-function setSearch(v){ currentSearch=v.toLowerCase(); renderJournal(); }
+function setSearch(v){srch=v.toLowerCase();renderJournal();}
 
 function renderJournal(){
-  let data=allTrades;
-  if(currentSearch) data=data.filter(d=>d.date.includes(currentSearch));
-  if(currentFilter==='trades') data=data.filter(d=>d.result!=='NO TRADE');
-  if(currentFilter==='wins')   data=data.filter(d=>d.result==='WIN');
-  if(currentFilter==='losses') data=data.filter(d=>d.result==='LOSS');
-  if(currentFilter==='live')   data=data.filter(d=>d.source==='live');
+  let data=trades;
+  if(srch)data=data.filter(d=>d.date.includes(srch));
+  if(filt==='trades')data=data.filter(d=>d.result!=='NO TRADE');
+  if(filt==='wins')  data=data.filter(d=>d.result==='WIN');
+  if(filt==='losses')data=data.filter(d=>d.result==='LOSS');
+  if(filt==='live')  data=data.filter(d=>d.source==='live');
+  const ct=document.getElementById('j-count');
+  if(ct)ct.textContent=data.length+' records';
+  const tb=document.getElementById('j-tbody');
+  if(!tb)return;
+  if(!data.length){tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:32px;color:#aeaeb2">No records match this filter</td></tr>';return;}
 
-  document.getElementById('j-count').textContent=data.length+' records';
-  const tbody=document.getElementById('j-tbody');
+  const fp=v=>v!=null?Number(v).toFixed(2):'n/a';
+  const fr=v=>v!=null&&v!==0?(v>0?'+':'')+Number(v).toFixed(2)+'R':'n/a';
 
-  if(!data.length){
-    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:32px;color:#aeaeb2;">No records match this filter</td></tr>';
-    return;
+  if(inst==='spy'){
+    tb.innerHTML=data.slice(0,400).map(d=>{
+      const bc=d.result==='WIN'?'win':d.result==='LOSS'?'loss':d.result==='PENDING'?'pending':d.result==='NO TRADE'?'notrade':'flat';
+      const pc=d.pnl_r>0?'pnl-pos':d.pnl_r<0?'pnl-neg':'';
+      return `<tr><td style="color:#6e6e73">${d.date}</td><td class="${d.source==='live'?'td-live':'td-bt'}">${d.source}</td><td>${d.or_high?'$'+Number(d.or_high).toFixed(2):'n/a'}</td><td>${d.entry?'$'+Number(d.entry).toFixed(2):'n/a'}</td><td>${d.stop?'$'+Number(d.stop).toFixed(2):'n/a'}</td><td>${d.target?'$'+Number(d.target).toFixed(2):'n/a'}</td><td>${d.risk_dollars?'$'+Number(d.risk_dollars).toLocaleString():'n/a'}</td><td>${d.vol_ratio?Number(d.vol_ratio).toFixed(2)+'x':'n/a'}</td><td><span class="badge ${bc}">${d.result}</span></td><td class="${pc}">${fr(d.pnl_r)}</td></tr>`;
+    }).join('');
+  }else{
+    tb.innerHTML=data.slice(0,400).map(d=>{
+      const bc=d.result==='WIN'?'win':d.result==='LOSS'?'loss':d.result==='NO TRADE'?'notrade':'flat';
+      const pc=d.pnl_r>0?'pnl-pos':d.pnl_r<0?'pnl-neg':'';
+      const pdol=d.pnl_dollars!=null&&d.pnl_dollars!==0?`<span class="${d.pnl_dollars>0?'pnl-pos':'pnl-neg'}">${d.pnl_dollars>0?'+':''}$${Math.abs(d.pnl_dollars).toLocaleString()}</span>`:'n/a';
+      const fomc=d.is_fomc?'<span class="fomc-pill">FOMC</span>':'No';
+      return `<tr><td style="color:#6e6e73">${d.date}${d.is_fomc?'<span class="fomc-pill">FOMC</span>':''}</td><td>${fp(d.or_high)}</td><td>${fp(d.or_low)}</td><td>${fp(d.entry)}</td><td>${fp(d.stop)}</td><td>${fp(d.target)}</td><td>${fp(d.exit_price)}</td><td>${d.risk_pts!=null?d.risk_pts+' pts':'n/a'}</td><td>${d.contracts!=null?d.contracts:'n/a'}</td><td>${d.vol_ratio!=null?Number(d.vol_ratio).toFixed(2)+'x':'n/a'}</td><td>${fomc}</td><td><span class="badge ${bc}">${d.result}</span></td><td class="${pc}">${fr(d.pnl_r)}</td><td>${pdol}</td></tr>`;
+    }).join('');
   }
-
-  tbody.innerHTML=data.slice(0,400).map(d=>{
-    const nt=d.result==='NO TRADE';
-    const bc=d.result==='WIN'?'win':d.result==='LOSS'?'loss':d.result==='PENDING'?'pending':nt?'notrade':'flat';
-    const pc=d.pnl_r>0?'pnl-pos':d.pnl_r<0?'pnl-neg':'';
-    const sc=d.source==='live'?'td-live':'td-bt';
-    const f2=v=>v!=null?'$'+Number(v).toFixed(2):'—';
-    const fr=v=>v!=null&&v!==0?(v>0?'+':'')+Number(v).toFixed(2)+'R':'—';
-    return `<tr>
-      <td style="color:#6e6e73">${d.date}</td>
-      <td class="${sc}">${d.source}</td>
-      <td>${d.or_high?'$'+Number(d.or_high).toFixed(2):'—'}</td>
-      <td>${f2(d.entry)}</td><td>${f2(d.stop)}</td><td>${f2(d.target)}</td>
-      <td>${d.risk_dollars?'$'+Number(d.risk_dollars).toLocaleString():'—'}</td>
-      <td>${d.vol_ratio?Number(d.vol_ratio).toFixed(2)+'×':'—'}</td>
-      <td><span class="badge ${bc}">${d.result}</span></td>
-      <td class="${pc}">${fr(d.pnl_r)}</td>
-    </tr>`;
-  }).join('');
 }
 
-const now=new Date();
-const ds=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-document.getElementById('footer-date').textContent='Updated '+ds;
-document.getElementById('regime-date').textContent=ds;
-
-loadTrades();
+document.getElementById('footer-date').textContent='Updated '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+buildHero(); buildTabs(); activateFirst();
 </script>
 </body>
 </html>
