@@ -7725,5 +7725,18 @@
     "vol_ratio": 1.115,
     "result": "LOSS",
     "pnl_r": -0.5
+  },
+  {
+    "date": "2026-05-27",
+    "source": "live",
+    "or_high": 751.25,
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "risk": null,
+    "risk_dollars": null,
+    "vol_ratio": 1.99,
+    "result": "NO TRADE",
+    "pnl_r": 0
   }
 ]
