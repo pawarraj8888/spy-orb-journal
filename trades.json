@@ -7777,5 +7777,18 @@
     "vol_ratio": 0.506,
     "result": "NO TRADE",
     "pnl_r": 0
+  },
+  {
+    "date": "2026-07-17",
+    "source": "live",
+    "or_high": 742.66,
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "risk": null,
+    "risk_dollars": null,
+    "vol_ratio": 0.744,
+    "result": "NO TRADE",
+    "pnl_r": 0
   }
 ]
